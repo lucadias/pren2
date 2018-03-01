@@ -1,13 +1,13 @@
-# Pren 1 IT ToDo
-<i>Luca Paiva Dias & Pius Dittli</i><br>
-<i>Last Updated: 17. November 2017</i>
+# Pren 2 IT ToDo
+<i>Luca Paiva Dias & Lendrit Malushi</i><br>
+<i>Last Updated: 01. März 2018</i>
 
 ## Part 0: Management
 - ~~Create ToDo List~~
 - Update ToDoList
 - Review Old Project Data
 
-## Part 1: Client-Server
+## Part 1: Client-Server  - Luca
 - Server Socket Connection
 - Server sending data
 - Server accept Connections
@@ -15,7 +15,7 @@
 - Client reviece data
 - Client display data
 
-## Part 2: PiCam Data Analysing
+## Part 2: PiCam Data Analysing - Lenny
 - Get PiCam data
 - Analysing data
 - Sending results to Central control
