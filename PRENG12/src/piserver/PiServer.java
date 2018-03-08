@@ -5,8 +5,11 @@
  */
 package piserver;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -15,40 +18,33 @@ import java.net.Socket;
  * @author luca_
  */
 public class PiServer {
-    
-        public static void main(String[] args) throws Exception {
+
+    public static void main(String[] args) throws Exception {
 
         // create socket
         int port = 4444;
         ServerSocket serverSocket = new ServerSocket(port);
         System.err.println("Started server on port " + port);
+        
 
         // repeatedly wait for connections, and process
         while (true) {
 
-            // a "blocking" call which waits until a connection is requested
-            Socket clientSocket = serverSocket.accept();
-            System.err.println("Accepted connection from client");
+            Socket socket = serverSocket.accept();
+            OutputStream os = socket.getOutputStream();
+            PrintWriter pw = new PrintWriter(os, true);
+            pw.println("What's you name?");
 
-            // open up IO streams
-            /*InputStream  in  = new InputStream(clientSocket);
-            OutputStream out = new OutputStream(clientSocket);
+            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String str = br.readLine();
 
-            // waits for data and reads it in until connection dies
-            // readLine() blocks until the server receives a new line from client
-            String s;
-            while ((s = in.readLine()) != null) {
-                out.println(s);
-            }
+            pw.println("Hello, " + str);
+            pw.close();
+            socket.close();
 
-            // close IO streams, then socket
-            System.err.println("Closing connection with client");
-            out.close();
-            in.close();
-            clientSocket.close();
+            System.out.println("Just said hello to:" + str);
+
         }
-*/
-        }
-        }
-    
+    }
+
 }

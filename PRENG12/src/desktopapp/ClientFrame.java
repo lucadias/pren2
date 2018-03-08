@@ -5,6 +5,7 @@
  */
 package desktopapp;
 
+import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -22,7 +23,10 @@ import javax.swing.border.EmptyBorder;
 public class ClientFrame extends JFrame{
     private final JPanel contentPane;
 
-    public ClientFrame(){
+    public ClientFrame() throws IOException{
+        
+        ClientSocket cs = new ClientSocket();
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1280, 720);
         contentPane = new JPanel();
