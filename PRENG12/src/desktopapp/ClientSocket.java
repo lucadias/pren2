@@ -19,6 +19,7 @@ public class ClientSocket {
 
     static PrintWriter out;
 
+
     public ClientSocket() throws IOException {
         final String host = "localhost";
         final int portNumber = 4444;

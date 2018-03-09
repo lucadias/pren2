@@ -40,67 +40,23 @@ public class ControlData extends Observable {
     /**
      * Löst den Greifmechanismus aus.
      */
-    public void greifen() {
-        greifen = true;
-        
-        setChanged();
-        notifyObservers();
-        
-        greifen = false;
-        
-        setChanged();
-        notifyObservers();
-    }
+
 
     /**
      * Löst den Entsorgungsmechanismus aus.
      */
-    public void entsorgen() {
-        entsorgen = true;
+    public void startSignal() {
+        startSignal = true;
         
         setChanged();
         notifyObservers();
         
-        entsorgen = false;
+        startSignal = false;
         
         setChanged();
         notifyObservers();
     }
     
-    /**
-     * Setzt das Entsorgen Flag zurück
-     */
-    public void resetEntsorgen() {
-        entsorgen = false;
-        
-        setChanged();
-        notifyObservers();
-    }
-
-    /**
-     * Setzt die Motorgeschwindigkeit rechts
-     *
-     * @param speed in logischen Schritten von 0-128
-     */
-    public void setMotorSpeedRight(int speed) {
-        motorSpeedRight = speed;
-        
-        setChanged();
-        notifyObservers();
-    }
-
-    /**
-     * Setzt die Motorgeschwindigkeit links
-     *
-     * @param speed in logischen Schritten von 0-128
-     */
-    public void setMotorSpeedLeft(int speed) {
-        motorSpeedLeft = speed;
-        
-        setChanged();
-        notifyObservers();
-    }
-
     /**
      * Generiert die byte-Repräsentation aufgrund des aktuellen Zustand dieses
      * Objektes.
