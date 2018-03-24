@@ -3,12 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package serial;
+package desktopapp;
+
+import javax.swing.JPanel;
 
 /**
  *
  * @author luca_
  */
-public class SerialController {
+public class PositionPanel extends JPanel{
+
+    
+    public PositionPanel() {
+    }
     
 }
