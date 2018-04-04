@@ -88,7 +88,7 @@ public class EchoServer {
      
      public static void main( String[] args ) {
         try {
-            new EchoServer( "127.0.0.1", 3575 );
+            new EchoServer( "127.0.0.1", 4444 );
             for( ; ; ) {
                 Thread.sleep(10*1000);
             }

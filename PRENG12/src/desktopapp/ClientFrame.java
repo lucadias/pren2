@@ -1,68 +1,106 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package desktopapp;
 
-import java.awt.BorderLayout;
-import static java.awt.Color.GRAY;
-import java.awt.GridLayout;
+import desktopapp.clientsocket.ClientSocket;
 import java.io.IOException;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
-/**
- *
- * @author luca_
- */
-//TODO
-//Create Socket
-//Connect to Server
-//Collect and show Data
-public class ClientFrame extends JFrame {
+public class ClientFrame extends Application {
 
-    public static void main(String[] args) throws IOException {
-
-        //ClientSocket socket = new ClientSocket();
-       // ClientFrame frame = new ClientFrame();
-        UIDesignTest frame2 = new UIDesignTest();
-        frame2.setVisible(true);
+    public void initialize() {
+        this.launch();
     }
 
-    JFrame mainframe;
-            
-    public ClientFrame() throws IOException {
+    ObservableList<String> items;
+    ListView<String> list;
+    GridPane grid;
+    ClientSocket socket;
+    Thread thread;
 
-        mainframe = new JFrame();
-        
-        JList debuglist = new JList();
-        JButton startbutton = new JButton();
-        
-        
-     /*   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        panel.setLayout(new BorderLayout(5, 5));
+    @Override
+    public void start(Stage primaryStage) {
+        this.settings(primaryStage);
+        System.out.println("asdf");
+        this.addItemsToList("luca");
 
-        JLabel label = new JLabel("Hello World");
+        try {
 
-        frame.getContentPane().add(panel);
-        panel.setBackground(GRAY);
-        panel.add(label);
-        GridLayout experimentLayout = new GridLayout(0, 3);
-        
+            socket = new ClientSocket();
+            thread = new Thread(socket);
+            thread.start();
 
-        panel.setLayout(experimentLayout);
-
-        panel.add(new JButton("Button 1"));
-        panel.add(new JButton("Button 2"));
-        panel.add(new JButton("Button 3"));
-        panel.add(new JButton("Long-Named Button 4"));
-        panel.add(new JButton("5"));
-        frame.setSize(1280, 720);
-        frame.setVisible(true);3/
+        } catch (IOException ex) {
+            Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    public void settings(Stage primaryStage) {
+        //Frame Settings
+        primaryStage.setTitle("JavaFX Welcome");
+        grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        Image image = new Image("File:image.png");
+        grid.add(new ImageView(image), 0, 0, 1, 1);
+
+        list = new ListView<String>();
+        items = FXCollections.observableArrayList(
+                "Single", "Double", "Suite", "Family App");
+        list.setItems(items);
+        items.add("test");
+
+        grid.add(list, 1, 0, 1, 1);
+
+        Text scenetitle2 = new Text("Position X: 00 | Position Y: 00");
+        scenetitle2.setFont(Font.font("Tahoma", FontWeight.NORMAL, 30));
+        grid.add(scenetitle2, 0, 1, 1, 1);
+
+        Button btn = new Button("Start");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(btn);
+        btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                System.out.println("Button pressed");
+                socket.write("message");
+            }
+        });
+
+        grid.add(hbBtn, 1, 1, 1, 1);
+        grid.setFillWidth(btn, true);
+        grid.setFillHeight(btn, true);
+
+        Scene scene = new Scene(grid, 720, 600);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        System.out.println(items);
+
+        items.add("boay");
+
+    }
+
+    public void addItemsToList(String Log) {
+
+        this.items.add(Log);
+
+    }
 }
