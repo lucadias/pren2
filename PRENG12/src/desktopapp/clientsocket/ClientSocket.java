@@ -5,6 +5,7 @@
  */
 package desktopapp.clientsocket;
 
+import desktopapp.ClientFrame;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +23,10 @@ public class ClientSocket implements Runnable {
     static PrintWriter out;
     final String host = "localhost";
     final int portNumber = 4444;
+    String response;
+    String userInput;
+    Socket socket = null;
+    BufferedReader br;
 
     public ClientSocket() throws IOException {
         System.out.println("Creating socket to '" + host + "' on port " + portNumber);
@@ -30,35 +35,47 @@ public class ClientSocket implements Runnable {
 
     @Override
     public void run() {
-        Socket socket = null;
         while (true) {
-            try {
-                socket = new Socket(host, portNumber);
+            read();
+            socketwrite();
+        }
+    }
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                out = new PrintWriter(socket.getOutputStream(), true);
-
-                System.out.println("server says:" + br.readLine());
-
-                BufferedReader userInputBR = new BufferedReader(new InputStreamReader(System.in));
-                String userInput = userInputBR.readLine();
-
-                out.println(userInput);
-
-                System.out.println("server says:" + br.readLine());
-
-                if ("exit".equalsIgnoreCase(userInput)) { 
-                   socket.close();
-                    break;
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(ClientSocket.class.getName()).log(Level.SEVERE, null, ex);
+    public void socketwrite() {
+        try {
+            BufferedReader userInputBR = new BufferedReader(new InputStreamReader(System.in));
+            if (userInput == null) {
+                userInput = userInputBR.readLine();
             }
+            out.println(userInput);
+
+            response = br.readLine();
+            System.out.println("server says:" + response);
+
+            userInput = null;
+        } catch (IOException ex) {
+
+        }
+
+    }
+
+    public void read() {
+        try {
+            socket = new Socket(host, portNumber);
+
+            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+
+            System.out.println("server says:" + br.readLine());
+        } catch (IOException ex) {
+            Logger.getLogger(ClientSocket.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void write(String text) {
-
-        out.println(text);
+        System.out.println(text);
+        userInput = text;
+        read();
     }
+
 }

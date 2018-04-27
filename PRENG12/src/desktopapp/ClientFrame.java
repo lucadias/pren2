@@ -28,17 +28,19 @@ public class ClientFrame extends Application {
         this.launch();
     }
 
-    ObservableList<String> items;
-    ListView<String> list;
-    GridPane grid;
-    ClientSocket socket;
+    private ObservableList<String> items;
+    private ListView<String> list;
+    private GridPane grid;
+    private ClientSocket socket;
     Thread thread;
+    public static String pushtolist;
 
     @Override
     public void start(Stage primaryStage) {
         this.settings(primaryStage);
         System.out.println("asdf");
         this.addItemsToList("luca");
+        pushtolist = null;
 
         try {
 
@@ -58,8 +60,12 @@ public class ClientFrame extends Application {
         grid.setHgap(10);
         grid.setVgap(10);
 
-        Image image = new Image("File:image.png");
-        grid.add(new ImageView(image), 0, 0, 1, 1);
+        Image image = new Image("File:image.jpg");
+        ImageView imageview = new ImageView(image);
+        imageview.setFitHeight(900);
+        imageview.setFitWidth(1200);
+        grid.add(imageview, 0, 0, 1, 1);
+        
 
         list = new ListView<String>();
         items = FXCollections.observableArrayList(
@@ -81,7 +87,9 @@ public class ClientFrame extends Application {
             @Override
             public void handle(ActionEvent e) {
                 System.out.println("Button pressed");
-                socket.write("message");
+                addItemsToList("boay");
+               socket.write("message");
+
             }
         });
 
@@ -89,7 +97,7 @@ public class ClientFrame extends Application {
         grid.setFillWidth(btn, true);
         grid.setFillHeight(btn, true);
 
-        Scene scene = new Scene(grid, 720, 600);
+        Scene scene = new Scene(grid, 1500, 1000);
         primaryStage.setScene(scene);
         primaryStage.show();
         System.out.println(items);
@@ -98,9 +106,12 @@ public class ClientFrame extends Application {
 
     }
 
+    
+    
     public void addItemsToList(String Log) {
 
         this.items.add(Log);
-
+//        list.getItems().set( list.getSelectionModel().getSelectedIndex(), Log );
+    
     }
 }
