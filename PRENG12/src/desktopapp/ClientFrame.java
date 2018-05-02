@@ -36,10 +36,10 @@ public class ClientFrame extends Application {
     public static String pushtolist;
 
     @Override
-    public void start(Stage primaryStage) {
-        this.settings(primaryStage);
+    public void start(Stage primaryStage) throws InterruptedException {
+     //   this.settings(primaryStage);
         System.out.println("asdf");
-        this.addItemsToList("luca");
+//        this.addItemsToList("luca");
         pushtolist = null;
 
         try {
@@ -51,6 +51,10 @@ public class ClientFrame extends Application {
         } catch (IOException ex) {
             Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        Thread.sleep(1000);
+        socket.write("asdfasdfasdf");
+        socket.read();
     }
 
     public void settings(Stage primaryStage) {
@@ -110,7 +114,7 @@ public class ClientFrame extends Application {
     
     public void addItemsToList(String Log) {
 
-        this.items.add(Log);
+     //   this.items.add(Log);
 //        list.getItems().set( list.getSelectionModel().getSelectedIndex(), Log );
     
     }
