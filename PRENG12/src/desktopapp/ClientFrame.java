@@ -1,6 +1,5 @@
 package desktopapp;
 
-import desktopapp.clientsocket.ClientSocket;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

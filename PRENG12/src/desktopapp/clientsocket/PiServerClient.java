@@ -1,5 +1,5 @@
 
-package piserver;
+package desktopapp.clientsocket;
 import java.io.*;
 import java.net.*;
 

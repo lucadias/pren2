@@ -49,7 +49,7 @@ public class PRENG12 {
         
     }
     
-    public static void runloop() throws InterruptedException{
+    public synchronized static void runloop() throws InterruptedException{
         
         
         
@@ -72,11 +72,11 @@ public class PRENG12 {
         }
     }
     
-    public static void updateDistanz(double Distanz){
+    public synchronized static void updateDistanz(double Distanz){
         
     }
     
-    public static void lastPinHigh(){
+    public synchronized static void lastPinHigh(){
         
     }
 }
