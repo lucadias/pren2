@@ -8,6 +8,8 @@ import java.util.List;
 
 public class Rectangle {
 
+//                preng12.PRENG12.objectRecognized();
+  //              preng12.PRENG12.sendMatLogic(bild);
 
     public Mat findRectangle(Mat src) throws Exception {
         Mat blurred = src.clone();

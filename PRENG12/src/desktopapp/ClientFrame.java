@@ -30,13 +30,12 @@ public class ClientFrame extends Application {
     private ObservableList<String> items;
     private ListView<String> list;
     private GridPane grid;
-    private ClientSocket socket;
     Thread thread;
     public static String pushtolist;
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
-     //   this.settings(primaryStage);
+        this.settings(primaryStage);
         System.out.println("asdf");
 //        this.addItemsToList("luca");
         pushtolist = null;
@@ -91,7 +90,7 @@ public class ClientFrame extends Application {
             public void handle(ActionEvent e) {
                 System.out.println("Button pressed");
                 addItemsToList("boay");
-               socket.write("message");
+       //        socket.write("message");
 
             }
         });

@@ -7,6 +7,7 @@ package preng12;
 
 import gpio.GPIOCommunication;
 import gpio.UltraSchallSensor;
+import org.opencv.core.Mat;
 
 /**
  *
@@ -57,13 +58,13 @@ public class PRENG12 {
             Thread.sleep(1000);
             
             
-            socket.sendPosition(ap.getX(),ap.getY());
-            socket.sendLogs("Position aktualisiert");
+         //   socket.sendPosition(ap.getX(),ap.getY());
+          //  socket.sendLogs("Position aktualisiert");
             
             if(ds.getR()){
                 gpioc.stopPinHigh();
-                socket.sendLogs("Position Erkannt");
-                socket.sendLogs("Melde Freedomboard Stoppen");
+            //    socket.sendLogs("Position Erkannt");
+              //  socket.sendLogs("Melde Freedomboard Stoppen");
             }
             
                 
@@ -71,6 +72,16 @@ public class PRENG12 {
             
         }
     }
+    
+    
+    public synchronized static void objectRecognized(){
+        
+    }
+    
+    public synchronized static void sendMatLogic(Mat bild){
+        //socket.sendMat(Mat bild);
+    }
+    
     
     public synchronized static void updateDistanz(double Distanz){
         
