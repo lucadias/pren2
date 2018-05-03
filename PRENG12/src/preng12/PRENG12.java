@@ -5,8 +5,8 @@
  */
 package preng12;
 
-import ultraschallsensor.GPIOCommunication;
-import ultraschallsensor.UltraSchallSensor;
+import gpio.GPIOCommunication;
+import gpio.UltraSchallSensor;
 
 /**
  *

@@ -1,4 +1,4 @@
-package ultraschallsensor;
+package gpio;
 
 import com.pi4j.io.gpio.*;
 
