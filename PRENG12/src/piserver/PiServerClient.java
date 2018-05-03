@@ -3,17 +3,17 @@ package piserver;
 import java.io.*;
 import java.net.*;
 
-public class KnockKnockClient {
+public class PiServerClient {
     public static void main(String[] args) throws IOException {
   
         String hostName = "localhost";
         int portNumber = 4444;
 
         try (
-            Socket kkSocket = new Socket(hostName, portNumber);
-            PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
+            Socket psSocket = new Socket(hostName, portNumber);
+            PrintWriter out = new PrintWriter(psSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(
-                new InputStreamReader(kkSocket.getInputStream()));
+                new InputStreamReader(psSocket.getInputStream()));
         ) {
             BufferedReader stdIn =
                 new BufferedReader(new InputStreamReader(System.in));

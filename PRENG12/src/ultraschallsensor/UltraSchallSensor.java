@@ -2,35 +2,26 @@ package ultraschallsensor;
 
 import com.pi4j.io.gpio.*;
 
-public class main {
+public class UltraSchallSensor {
+
     //GPIO Pins
-
+    private static UltraSchallSensor instance = null;
     private static GpioPinDigitalOutput sensorTriggerPin;
-    private static GpioPinDigitalOutput sensorStartPin;
-    private static GpioPinDigitalOutput sensorStopPin;
-    private static GpioPinDigitalOutput sensorMittePin;
-
     private static GpioPinDigitalInput sensorEchoPin;
-    private static GpioPinDigitalInput sensorLastPin;
 
     final static GpioController gpio = GpioFactory.getInstance();
 
-    public static void main(String[] args) throws InterruptedException {
-        new main().run();
+    public static UltraSchallSensor getInstance() {
+        if (instance == null) {
+            instance = new UltraSchallSensor();
+        }
+        return instance;
     }
 
     public void run() throws InterruptedException {
         sensorTriggerPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00); // Trigger pin as OUTPUT
         sensorEchoPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); // Echo pin as INPUT
 
-        sensorStartPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_20); // Trigger pin as OUTPUT
-        sensorStopPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_19); // Trigger pin as OUTPUT
-
-
-        sensorLastPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, PinPullResistance.PULL_DOWN); // Echo pin as INPUT
-
-        //GPIO 20 start
-        
         while (true) {
             try {
                 Thread.sleep(200);
@@ -47,7 +38,10 @@ public class main {
                 }
                 long endTime = System.nanoTime(); // Store the echo pin HIGH end time to calculate ECHO pin HIGH time.
 
-                System.out.println("Distance :" + ((((endTime - startTime) / 1e3) / 2) / 29.1) + " cm"); //Printing out the distance in cm  
+                double ussdistanz = ((((endTime - startTime) / 1e3) / 2) / 29.1);
+
+                preng12.PRENG12.updateDistanz(ussdistanz);
+
                 Thread.sleep(100);
 
             } catch (InterruptedException e) {

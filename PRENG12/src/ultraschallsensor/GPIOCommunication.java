@@ -5,7 +5,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class GPIOCommunication {
+
     //GPIO Pins
+    //GPIO Pins
+    private static GPIOCommunication instance = null;
 
     private static GpioPinDigitalOutput sensorStartPin;
     private static GpioPinDigitalOutput sensorStopPin;
@@ -14,49 +17,40 @@ public class GPIOCommunication {
 
     final static GpioController gpio = GpioFactory.getInstance();
 
-    public static void main(String[] args) throws InterruptedException {
-        // System.out.println("Hallo");
-        // System.out.println("hallo3");
+    public static GPIOCommunication getInstance() {
+        if (instance == null) {
+            instance = new GPIOCommunication();
+        }
+        return instance;
+    }
+
+    public void initialize() throws InterruptedException {
         sensorStartPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_28); // Trigger pin as OUTPUT
         sensorStopPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_25); // Trigger pin as OUTPUT
-        // System.out.println("hallo4");
         sensorLastPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_24, PinPullResistance.PULL_DOWN); // Echo pin as INPUT
-        String s = null;
-        //GPIO 20 start
-        // System.out.println("test");
 
         sensorStartPin.low();
         sensorStopPin.low();
 
-        System.out.println("pins low");
-        Thread.sleep(5000);
+    }
+
+    public void startPinHigh() {
         sensorStartPin.high();
 
-        Thread.sleep(10000);
-        
-        sensorStopPin.high();
-//        sensorStartPin.low();
+    }
 
+    public void stopPinHigh() {
+        sensorStopPin.high();
+    }
+
+    public void checkForLastPin() throws InterruptedException {
         while (sensorLastPin.isLow()) {
-               Thread.sleep(200);
-            System.out.println("chegge if last aufgenommen");
+            Thread.sleep(200);
+            preng12.PRENG12.lastPinHigh();
         }
-
-        System.out.println("Last aufgenommen");
-        sensorStartPin.low();
-        Thread.sleep(15000);
-
-        sensorStopPin.high();
-        System.out.println("STOP PIN HIGH KOLLEGE");
-        Thread.sleep(10000);
-
-        
-        System.out.println("set pins to low again - end sequence");
-        sensorStartPin.low();
-        sensorStopPin.low();
     }
 
     public void run() throws InterruptedException {
-
+        checkForLastPin();
     }
 }

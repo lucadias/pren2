@@ -42,19 +42,19 @@ public class ClientFrame extends Application {
 //        this.addItemsToList("luca");
         pushtolist = null;
 
-        try {
+        //try {
 
-            socket = new ClientSocket();
-            thread = new Thread(socket);
-            thread.start();
+        //    socket = new ClientSocket();
+          //  thread = new Thread(socket);
+            //thread.start();
 
-        } catch (IOException ex) {
-            Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    //    } catch (IOException ex) {
+    //        Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE, null, ex);
+      //  }
         
-        Thread.sleep(1000);
-        socket.write("asdfasdfasdf");
-        socket.read();
+    //    Thread.sleep(1000);
+     //   socket.write("asdfasdfasdf");
+       // socket.read();
     }
 
     public void settings(Stage primaryStage) {
@@ -114,7 +114,7 @@ public class ClientFrame extends Application {
     
     public void addItemsToList(String Log) {
 
-     //   this.items.add(Log);
+        this.items.add(Log);
 //        list.getItems().set( list.getSelectionModel().getSelectedIndex(), Log );
     
     }
