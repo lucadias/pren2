@@ -21,7 +21,7 @@ public class UltraSchallSensor {
     public void run() throws InterruptedException {
         sensorTriggerPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00); // Trigger pin as OUTPUT
         sensorEchoPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); // Echo pin as INPUT
-
+        System.out.println("UltraSchallSensor initialized");
         while (true) {
             try {
                 Thread.sleep(200);

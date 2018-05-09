@@ -1,5 +1,6 @@
 package desktopapp;
 
+import desktopapp.clientsocket.PiServerClient;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,27 +33,17 @@ public class ClientFrame extends Application {
     private GridPane grid;
     Thread thread;
     public static String pushtolist;
+    public static PiServerClient instance = PiServerClient.getInstance();
 
     @Override
-    public void start(Stage primaryStage) throws InterruptedException {
+    public void start(Stage primaryStage) throws InterruptedException, IOException {
         this.settings(primaryStage);
-        System.out.println("asdf");
-//        this.addItemsToList("luca");
+        
         pushtolist = null;
 
-        //try {
-
-        //    socket = new ClientSocket();
-          //  thread = new Thread(socket);
-            //thread.start();
-
-    //    } catch (IOException ex) {
-    //        Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE, null, ex);
-      //  }
-        
-    //    Thread.sleep(1000);
-     //   socket.write("asdfasdfasdf");
-       // socket.read();
+        instance = PiServerClient.getInstance();
+        thread = new Thread(instance);
+        thread.start();
     }
 
     public void settings(Stage primaryStage) {
@@ -67,13 +58,11 @@ public class ClientFrame extends Application {
         imageview.setFitHeight(900);
         imageview.setFitWidth(1200);
         grid.add(imageview, 0, 0, 1, 1);
-        
 
         list = new ListView<String>();
         items = FXCollections.observableArrayList(
-                "Single", "Double", "Suite", "Family App");
+                "DebugLog initialized");
         list.setItems(items);
-        items.add("test");
 
         grid.add(list, 1, 0, 1, 1);
 
@@ -88,9 +77,9 @@ public class ClientFrame extends Application {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                System.out.println("Button pressed");
-                addItemsToList("boay");
-       //        socket.write("message");
+                System.out.println("Sending Start Signal to Raspi");
+                addItemsToList("Sending Start Signal to Raspi");
+                instance.startButtonPressed();
 
             }
         });
@@ -104,16 +93,12 @@ public class ClientFrame extends Application {
         primaryStage.show();
         System.out.println(items);
 
-        items.add("boay");
-
     }
 
-    
-    
     public void addItemsToList(String Log) {
 
         this.items.add(Log);
 //        list.getItems().set( list.getSelectionModel().getSelectedIndex(), Log );
-    
+
     }
 }
