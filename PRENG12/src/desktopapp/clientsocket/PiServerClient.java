@@ -30,29 +30,28 @@ public class PiServerClient extends Thread {
         String hostName = "localhost";
         int portNumber = 4444;
 
-        try (
-                Socket psSocket = new Socket(hostName, portNumber);
-                PrintWriter out = new PrintWriter(psSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(psSocket.getInputStream()));) {
-            BufferedReader stdIn
-                    = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            Socket psSocket = new Socket(hostName, portNumber);
+            PrintWriter out = new PrintWriter(psSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(psSocket.getInputStream()));
+
             String fromServer;
-            String fromUser;
 
             while ((fromServer = in.readLine()) != null) {
+
                 System.out.println("Server: " + fromServer);
                 if (fromServer.equals("Bye.")) {
                     break;
                 }
-                while (towrite == null) {
-                //System.out.println(towrite);
-                Thread.sleep(10);
-                }
-                out.println("startButtonPressed");
+                if (towrite == null) {
+                    while (towrite == null) {
+                        //System.out.println(towrite);
+                        Thread.sleep(10);
+                    }
+                    System.out.println("startButtonPressed");
 
-                
-                towrite = null;
+                }
+                //  towrite = null;
                 /*fromUser = stdIn.readLine();
 
                 if (fromUser != null) {
@@ -64,8 +63,7 @@ public class PiServerClient extends Thread {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to "
-                    + hostName);
+            System.err.println("Couldn't get I/O for the connection to " + hostName);
             System.exit(1);
         }
     }
@@ -84,6 +82,6 @@ public class PiServerClient extends Thread {
 
     public void startButtonPressed() {
         towrite = "startButtonPressed";
-        System.out.println(towrite);
+        // System.out.println(towrite);
     }
 }

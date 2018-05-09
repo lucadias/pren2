@@ -10,6 +10,7 @@ import gpio.UltraSchallSensor;
 import java.io.IOException;
 import org.opencv.core.Mat;
 import piserver.PiServer;
+import piserver.PiServerProtocol;
 
 /**
  *
@@ -20,12 +21,14 @@ public class PRENG12 {
     /**
      * @param args the command line arguments
      */
-    static ActualPosition ap;
+    
     static DetectionStatus ds;
     static GPIOCommunication gpioc;
     static Thread thread;
     public static String pushtolist;
     public static PiServer psinstance = PiServer.getInstance();
+    public static PiServerProtocol pspinstance = PiServerProtocol.getInstance();
+    public static ActualPosition ap = ActualPosition.getInstance();
 
     public static void main(String[] args) throws InterruptedException, IOException {
         initialize();
@@ -34,31 +37,39 @@ public class PRENG12 {
     public static void initialize() throws InterruptedException, IOException {
         //Socket
         psinstance = PiServer.getInstance();
+
+        pspinstance = PiServerProtocol.getInstance();
+
         thread = new Thread(psinstance);
         thread.start();
 
         //GPIOCommunication
-        GPIOCommunication gpioc = new GPIOCommunication();
+       // GPIOCommunication gpioc = new GPIOCommunication();
 
-        //RectangleDetection
+        //RectangleDetection9
         //DetectionStatus
-        DetectionStatus ds = new DetectionStatus().getInstance();
+        //ds = new DetectionStatus().getInstance();
 
         //ActualPosition
-        ActualPosition ap = new ActualPosition().getInstance();
+        ap = ActualPosition.getInstance();
 
         //UltraSchallSensor
-        UltraSchallSensor uss = new UltraSchallSensor();
-        uss.run();
-
+        //  UltraSchallSensor uss = new UltraSchallSensor();
+        //   uss.run();
+        runloop();
     }
 
     public synchronized static void runloop() throws InterruptedException {
 
         while (true) {
-            Thread.sleep(1000);
-
-            //   socket.sendPosition(ap.getX(),ap.getY());
+            
+            ap.updateX(40);
+            ap.updateY(20);
+            System.out.println("Wait 10 Seconds and then send Position");
+            Thread.sleep(10000);
+            
+            System.out.println("Send:" +ap.getX()+" "+ap.getY());
+            pspinstance.sendPosition(ap.getX(), ap.getY());
             //  socket.sendLogs("Position aktualisiert");
             //    if(ds.getR()){
             //      gpioc.stopPinHigh();

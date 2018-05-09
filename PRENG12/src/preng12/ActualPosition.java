@@ -41,7 +41,7 @@ public final class ActualPosition {
     }
 
     public void updateY(int y) {
-        this.x = y;
+        this.y = y;
     }
 
     public static int getX() {
