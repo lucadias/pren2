@@ -1,6 +1,6 @@
 package desktopapp;
 
-import desktopapp.clientsocket.PiServerClient;
+import piserver.PiServerClient;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +21,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import piserver.PiServer;
 
 public class ClientFrame extends Application {
 
@@ -33,7 +34,7 @@ public class ClientFrame extends Application {
     private GridPane grid;
     Thread thread;
     public static String pushtolist;
-    public static PiServerClient instance = PiServerClient.getInstance();
+    public static PiServer instance = PiServer.getInstance();
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException, IOException {
@@ -41,7 +42,7 @@ public class ClientFrame extends Application {
         
         pushtolist = null;
 
-        instance = PiServerClient.getInstance();
+        instance = PiServer.getInstance();
         thread = new Thread(instance);
         thread.start();
     }

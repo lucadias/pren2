@@ -48,11 +48,17 @@ public class ObjRecognition extends Application
         }
     }
 
-    public static void main(String[] args)
+    public static void initialize()
     {
         // load the native OpenCV library
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        launch(args);
+        System.load("C:/Users/luca_/Documents/NetBeansProjects/PrenTutorialOpenCV/lib/opencv_java331.dll");
+        
+        
+        //System.load("/home/pi/opencv-3.3.1/build/lib/libopencv_java331.so");
+
+
+        launch();
     }
 }

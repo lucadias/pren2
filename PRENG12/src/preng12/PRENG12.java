@@ -5,11 +5,14 @@
  */
 package preng12;
 
+import RectangleDetection.ObjRecognition;
 import gpio.GPIOCommunication;
 import gpio.UltraSchallSensor;
+
 import java.io.IOException;
 import org.opencv.core.Mat;
 import piserver.PiServer;
+import piserver.PiServerClient;
 import piserver.PiServerProtocol;
 
 /**
@@ -26,19 +29,20 @@ public class PRENG12 {
     static GPIOCommunication gpioc;
     static Thread thread;
     public static String pushtolist;
-    public static PiServer psinstance = PiServer.getInstance();
-    public static PiServerProtocol pspinstance = PiServerProtocol.getInstance();
+    public static PiServerClient psinstance = PiServerClient.getInstance();
     public static ActualPosition ap = ActualPosition.getInstance();
+    public static DetectionStatus dp = DetectionStatus.getInstance();
+    
 
+    
     public static void main(String[] args) throws InterruptedException, IOException {
         initialize();
     }
 
     public static void initialize() throws InterruptedException, IOException {
         //Socket
-        psinstance = PiServer.getInstance();
+        psinstance = PiServerClient.getInstance();
 
-        pspinstance = PiServerProtocol.getInstance();
 
         thread = new Thread(psinstance);
         thread.start();
@@ -48,20 +52,28 @@ public class PRENG12 {
 
         //RectangleDetection9
         //DetectionStatus
-        //ds = new DetectionStatus().getInstance();
+        ds = DetectionStatus.getInstance();
 
         //ActualPosition
         ap = ActualPosition.getInstance();
 
+        
+        
+        //ObjRecognition
+        ObjRecognition obc = new ObjRecognition();
+        obc.initialize();
+        
         //UltraSchallSensor
         //  UltraSchallSensor uss = new UltraSchallSensor();
         //   uss.run();
         runloop();
+        
     }
 
     public synchronized static void runloop() throws InterruptedException {
 
-        while (true) {
+        
+        while (startTrue) {
             
             ap.updateX(40);
             ap.updateY(20);
@@ -69,6 +81,8 @@ public class PRENG12 {
             Thread.sleep(10000);
             
             System.out.println("Send:" +ap.getX()+" "+ap.getY());
+            
+            
             pspinstance.sendPosition(ap.getX(), ap.getY());
             //  socket.sendLogs("Position aktualisiert");
             //    if(ds.getR()){

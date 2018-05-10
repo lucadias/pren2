@@ -1,4 +1,4 @@
-package desktopapp.clientsocket;
+package piserver;
 
 import java.io.*;
 import java.net.*;
@@ -49,6 +49,7 @@ public class PiServerClient extends Thread {
                         Thread.sleep(10);
                     }
                     System.out.println("startButtonPressed");
+                    out.println(towrite);
 
                 }
                 //  towrite = null;

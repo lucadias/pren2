@@ -47,5 +47,5 @@ public class PiServerProtocol {
         this.posY = posY;
         sendpos = true;
     }
-
+    
 }
