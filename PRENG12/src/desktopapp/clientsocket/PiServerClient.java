@@ -1,4 +1,4 @@
-package piserver;
+package desktopapp.clientsocket;
 
 import java.io.*;
 import java.net.*;
@@ -27,7 +27,7 @@ public class PiServerClient extends Thread {
 
     public static void initialize() throws IOException, InterruptedException {
 
-        String hostName = "localhost";
+        String hostName = "172.20.10.6";
         int portNumber = 4444;
 
         try {

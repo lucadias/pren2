@@ -17,10 +17,13 @@ public final class ActualPosition {
 
     public static int y;
     public static int x;
+    
+    public static boolean toSend;
 
     public ActualPosition() {
         y = 0;
         x = 0;
+        toSend = false;
     }
 
     public static ActualPosition getInstance() {
@@ -50,5 +53,13 @@ public final class ActualPosition {
 
     public static int getY() {
         return y;
+    }
+    
+    public static boolean getToSend(){
+        return toSend;
+    }
+    
+    public void updateToSend(boolean toSend){
+        this.toSend = toSend;
     }
 }

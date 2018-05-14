@@ -38,7 +38,9 @@ public class PiServerProtocol {
             System.out.println("StartButton Press erkannt");
             return "StartButton Press erkannt";
         }
-
+        if ("position".equals(theInput)) {
+            return "PosX: " + posX + ", PosY: " + posY;
+        }
         return theOutput;
     }
 
@@ -47,5 +49,5 @@ public class PiServerProtocol {
         this.posY = posY;
         sendpos = true;
     }
-    
+
 }

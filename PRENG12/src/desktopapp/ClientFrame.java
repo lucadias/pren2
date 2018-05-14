@@ -1,10 +1,12 @@
 package desktopapp;
 
-import piserver.PiServerClient;
+import desktopapp.clientsocket.PiServerClient;
+import desktopapp.clientsocket.ThreadedClient;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -34,15 +36,21 @@ public class ClientFrame extends Application {
     private GridPane grid;
     Thread thread;
     public static String pushtolist;
-    public static PiServer instance = PiServer.getInstance();
-
+    public static ThreadedClient instance = ThreadedClient.getInstance();
+    
+    public static LabelValue lv = LabelValue.getInstance().getInstance();
+    public static ObservableValue<String> labelvalue;
+    
     @Override
     public void start(Stage primaryStage) throws InterruptedException, IOException {
         this.settings(primaryStage);
         
         pushtolist = null;
-
-        instance = PiServer.getInstance();
+        
+        
+        lv = LabelValue.getInstance();
+        
+        instance = ThreadedClient.getInstance();
         thread = new Thread(instance);
         thread.start();
     }
@@ -67,7 +75,8 @@ public class ClientFrame extends Application {
 
         grid.add(list, 1, 0, 1, 1);
 
-        Text scenetitle2 = new Text("Position X: 00 | Position Y: 00");
+        Text scenetitle2 = new Text(lv.getValue());
+       //scenetitle2.textProperty().bind(lv);
         scenetitle2.setFont(Font.font("Tahoma", FontWeight.NORMAL, 30));
         grid.add(scenetitle2, 0, 1, 1, 1);
 
