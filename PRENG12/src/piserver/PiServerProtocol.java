@@ -31,7 +31,7 @@ public class PiServerProtocol {
 
         if (sendpos) {
             sendpos = false;
-            System.out.println("Sendposition processed input");
+           // System.out.println("Sendposition processed input");
             return "PosX: " + posX + ", PosY: " + posY;
         }
         if ("startButtonPressed".equals(theInput)) {

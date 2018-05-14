@@ -5,31 +5,64 @@
  */
 package desktopapp.clientsocket;
 
+import static desktopapp.clientsocket.PiServerClient.towrite;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class ClientUserInputReader extends Thread {
+
     Socket serverSocket;
-    public ClientUserInputReader(Socket serverSocket){
+    public static String towrite;
+
+    public ClientUserInputReader(Socket serverSocket) {
         this.serverSocket = serverSocket;
     }
-    public void run(){
-        BufferedReader stdIn = new BufferedReader(
-                 new InputStreamReader(System.in));
-        PrintWriter out;
-        try {
-            out = new PrintWriter(serverSocket.getOutputStream(), true);
-            String userInput;
 
-            while ((userInput = stdIn.readLine()) != null) {
-                out.println(userInput);
-                System.out.println("userinput" + userInput);
+    public void run() {
+        try {
+            
+            PrintWriter out = new PrintWriter(serverSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+
+            String fromServer;
+
+            while ((fromServer = in.readLine()) != null) {
+
+                System.out.println("Server: " + fromServer);
+                if (fromServer.equals("Bye.")) {
+                    break;
+                }
+                if (towrite == null) {
+                    while (towrite == null) {
+                        //System.out.println(towrite);
+                        Thread.sleep(10);
+                    }
+                    System.out.println("startButtonPressed");
+                    out.println(towrite);
+
+                }
+                //  towrite = null;
+                /*fromUser = stdIn.readLine();
+
+                if (fromUser != null) {
+                    System.out.println("Client: " + fromUser);
+                    out.println(fromUser);
+                }*/
             }
+        } catch (UnknownHostException e) {
+            System.err.println("Don't know about host ");
+            System.exit(1);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Couldn't get I/O for the connection to ");
+            System.exit(1);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClientUserInputReader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

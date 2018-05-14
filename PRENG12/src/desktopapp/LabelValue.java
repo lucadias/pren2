@@ -5,17 +5,16 @@
  */
 package desktopapp;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.StringProperty;
+
 
 /**
  *
  * @author luca_
  */
-public class LabelValue implements ObservableValue<String> {
+public class LabelValue{
 
-    String value;
+    StringProperty value;
 
     public LabelValue() {
 //asdf
@@ -34,31 +33,11 @@ public class LabelValue implements ObservableValue<String> {
     
 
     public void updatevalue(String value){
-        this.value = value;
+        this.value.set(value);
     }
-    @Override
-    public void addListener(ChangeListener<? super String> listener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void removeListener(ChangeListener<? super String> listener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String getValue() {
+    
+    public StringProperty getvalue(){
         return value;
     }
-
-    @Override
-    public void addListener(InvalidationListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void removeListener(InvalidationListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+   
 }

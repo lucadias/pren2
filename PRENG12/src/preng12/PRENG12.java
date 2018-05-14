@@ -12,7 +12,6 @@ import gpio.UltraSchallSensor;
 import java.io.IOException;
 import org.opencv.core.Mat;
 import piserver.PiServer;
-import desktopapp.clientsocket.PiServerClient;
 import piserver.EchoServer;
 import piserver.PiServerProtocol;
 
@@ -78,11 +77,11 @@ public class PRENG12 {
         int yp = 0;
         while (true) {
 
-            //  ap.updateX(xp+=1);
-            //ap.updateY(yp+=1);
-            System.out.println("Server" + ap.getX());
-            System.out.println("Wait 10 Seconds and then send Position");
-            Thread.sleep(3000);
+              ap.updateX(xp+=1);
+            ap.updateY(yp+=1);
+          //  System.out.println("Server" + ap.getX());
+          //  System.out.println("Wait 10 Seconds and then send Position");
+            Thread.sleep(500);
 
             System.out.println("Send:" + ap.getX() + " " + ap.getY());
 

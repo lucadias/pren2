@@ -5,7 +5,6 @@
  */
 package desktopapp.clientsocket;
 
-import static desktopapp.clientsocket.PiServerClient.towrite;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,7 +34,7 @@ public class ThreadedClient extends Thread {
 
     @Override
     public void run() {
-        String hostName = "172.20.10.6";
+        String hostName = "192.168.1.101";
 
         try {
             Socket serverSocket = new Socket(hostName, 4444);

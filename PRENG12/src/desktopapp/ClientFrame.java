@@ -1,11 +1,13 @@
 package desktopapp;
 
-import desktopapp.clientsocket.PiServerClient;
 import desktopapp.clientsocket.ThreadedClient;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,25 +33,23 @@ public class ClientFrame extends Application {
         this.launch();
     }
 
-    private ObservableList<String> items;
-    private ListView<String> list;
+    private static ObservableList<String> items;
+    private static ListView<String> list;
     private GridPane grid;
+    public static StringProperty test123 = new SimpleStringProperty();
     Thread thread;
     public static String pushtolist;
     public static ThreadedClient instance = ThreadedClient.getInstance();
-    
-    public static LabelValue lv = LabelValue.getInstance().getInstance();
-    public static ObservableValue<String> labelvalue;
-    
+
+    //   public static LabelValue lv = LabelValue.getInstance().getInstance();
+    //   public static ObservableValue<String> labelvalue;
     @Override
     public void start(Stage primaryStage) throws InterruptedException, IOException {
         this.settings(primaryStage);
-        
+
         pushtolist = null;
-        
-        
-        lv = LabelValue.getInstance();
-        
+
+        //     lv = LabelValue.getInstance();
         instance = ThreadedClient.getInstance();
         thread = new Thread(instance);
         thread.start();
@@ -75,8 +75,16 @@ public class ClientFrame extends Application {
 
         grid.add(list, 1, 0, 1, 1);
 
-        Text scenetitle2 = new Text(lv.getValue());
-       //scenetitle2.textProperty().bind(lv);
+      
+        Text scenetitle2 = new Text(test123.getValue());
+        test123.addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                        scenetitle2.setText(test123.getValue());
+            }
+        });
+
+        //scenetitle2.textProperty().bind(lv);
         scenetitle2.setFont(Font.font("Tahoma", FontWeight.NORMAL, 30));
         grid.add(scenetitle2, 0, 1, 1, 1);
 
@@ -90,7 +98,7 @@ public class ClientFrame extends Application {
                 System.out.println("Sending Start Signal to Raspi");
                 addItemsToList("Sending Start Signal to Raspi");
                 instance.startButtonPressed();
-
+                test123.setValue("hallo1234556");
             }
         });
 
@@ -105,10 +113,10 @@ public class ClientFrame extends Application {
 
     }
 
-    public void addItemsToList(String Log) {
+    public static void addItemsToList(String Log) {
 
-        this.items.add(Log);
+        items.add(Log);
+
 //        list.getItems().set( list.getSelectionModel().getSelectedIndex(), Log );
-
     }
 }
