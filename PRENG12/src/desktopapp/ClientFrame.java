@@ -75,12 +75,11 @@ public class ClientFrame extends Application {
 
         grid.add(list, 1, 0, 1, 1);
 
-      
         Text scenetitle2 = new Text(test123.getValue());
         test123.addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                        scenetitle2.setText(test123.getValue());
+                scenetitle2.setText(test123.getValue());
             }
         });
 
@@ -98,13 +97,29 @@ public class ClientFrame extends Application {
                 System.out.println("Sending Start Signal to Raspi");
                 addItemsToList("Sending Start Signal to Raspi");
                 instance.startButtonPressed();
-                test123.setValue("hallo1234556");
+
+            }
+        });
+        Button btnstop = new Button("Last erkannt");
+        HBox hbBtn1 = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_LEFT);
+        hbBtn.getChildren().add(btnstop);
+        btnstop.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                System.out.println("Sending Stop Signal to Raspi");
+                addItemsToList("Sending Stop Signal to Raspi");
+                instance.stopButtonPressed();
             }
         });
 
         grid.add(hbBtn, 1, 1, 1, 1);
+
+      //  grid.add(hbBtn1, 1, 1, 1, 1);
         grid.setFillWidth(btn, true);
         grid.setFillHeight(btn, true);
+        grid.setFillWidth(btnstop, true);
+        grid.setFillHeight(btnstop, true);
 
         Scene scene = new Scene(grid, 1500, 1000);
         primaryStage.setScene(scene);

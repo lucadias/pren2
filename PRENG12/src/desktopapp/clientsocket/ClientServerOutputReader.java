@@ -16,14 +16,14 @@ class ClientServerOutputReader extends Thread {
 
     Socket serverSocket;
     String outputFromServer;
-   // public static LabelValue lv = LabelValue.getInstance().getInstance();
+//    public static LabelValue lv = LabelValue.getInstance();
 
     public ClientServerOutputReader(Socket serverSocket) {
         this.serverSocket = serverSocket;
     }
 
     public void run() {
-       // System.out.println("blabal");
+        // System.out.println("blabal");
         try {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(serverSocket.getInputStream()));
@@ -37,16 +37,21 @@ class ClientServerOutputReader extends Thread {
                     //or some swing element. Because this output may overlap
                     //the user input from console
                     outputFromServer = in.readLine();
-              
-//                    ClientFrame.scenetitle2.setText(outputFromServer);
-                 //   ClientFrame.items
-                 ClientFrame.test123.setValue(outputFromServer);
-                 ClientFrame.pushtolist = "asdf";
-                 ClientFrame.addItemsToList("New Posistion:" +outputFromServer);
-                  //  System.out.println(outputFromServer);
-                    
-                   // lv.updatevalue(outputFromServer);
 
+//                    ClientFrame.scenetitle2.setText(outputFromServer);
+                    //   ClientFrame.items
+                    
+                    if(outputFromServer.contains("Pos")){
+                    ClientFrame.test123.setValue(outputFromServer);
+               //     lv.updatevalue(outputFromServer); 
+                   
+                    }
+                    if(outputFromServer.contains("last")){
+                 //      lv.updatevalue(outputFromServer); 
+                    }
+                    //   ClientFrame.addItemsToList("New Posistion:" +outputFromServer);
+                    //  System.out.println(outputFromServer);
+                    // lv.updatevalue(outputFromServer);
                 }
             }
         } catch (IOException e) {

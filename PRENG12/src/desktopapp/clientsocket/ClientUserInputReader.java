@@ -28,24 +28,19 @@ class ClientUserInputReader extends Thread {
         try {
             
             PrintWriter out = new PrintWriter(serverSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-
+            
             String fromServer;
 
-            while ((fromServer = in.readLine()) != null) {
+            while (true) {
 
-                System.out.println("Server: " + fromServer);
-                if (fromServer.equals("Bye.")) {
-                    break;
-                }
                 if (towrite == null) {
                     while (towrite == null) {
                         //System.out.println(towrite);
                         Thread.sleep(10);
                     }
-                    System.out.println("startButtonPressed");
-                    out.println(towrite);
-
+                    System.out.println(towrite);
+                    out.println(towrite);   
+                        towrite = null;
                 }
                 //  towrite = null;
                 /*fromUser = stdIn.readLine();
@@ -54,6 +49,7 @@ class ClientUserInputReader extends Thread {
                     System.out.println("Client: " + fromUser);
                     out.println(fromUser);
                 }*/
+                Thread.sleep(200);
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host ");

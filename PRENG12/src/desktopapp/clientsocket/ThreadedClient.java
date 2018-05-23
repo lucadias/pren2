@@ -34,7 +34,7 @@ public class ThreadedClient extends Thread {
 
     @Override
     public void run() {
-        String hostName = "192.168.1.101";
+        String hostName = "172.20.10.6";
 
         try {
             Socket serverSocket = new Socket(hostName, 4444);
@@ -53,8 +53,12 @@ public class ThreadedClient extends Thread {
     }
 
     public void startButtonPressed() {
-        towrite = "startButtonPressed";
+        ClientUserInputReader.towrite = "startButtonPressed";
         // System.out.println(towrite);
+    }
+
+    public void stopButtonPressed() {
+        ClientUserInputReader.towrite = "stopButtonPressed";
     }
 
 }

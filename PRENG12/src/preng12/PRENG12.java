@@ -28,6 +28,8 @@ public class PRENG12 {
     static Thread thread;
 
     static Thread thread2;
+
+    static Thread gpiocthread;
     public static String pushtolist;
     public static PiServer psinstance = PiServer.getInstance();
 
@@ -35,7 +37,8 @@ public class PRENG12 {
     public static PiServerProtocol psp = PiServerProtocol.getInstance();
     public static ActualPosition ap = ActualPosition.getInstance();
     public static DetectionStatus dp = DetectionStatus.getInstance();
-    public static boolean startTrue = false;
+    public static boolean bool_startSignalErhalten = false;
+    public static boolean lastaufgenommen = false;
 
     public static void main(String[] args) throws InterruptedException, IOException {
         initialize();
@@ -50,7 +53,9 @@ public class PRENG12 {
         thread.start();
 
         //GPIOCommunication
-        // GPIOCommunication gpioc = new GPIOCommunication();
+        gpioc = GPIOCommunication.getInstance();
+        gpiocthread = new Thread(gpioc);
+        gpiocthread.start();
         //RectangleDetection9
         //DetectionStatus
         dp = DetectionStatus.getInstance();
@@ -60,6 +65,7 @@ public class PRENG12 {
 
         psp = PiServerProtocol.getInstance();
 
+        lastaufgenommen = false;
         //  ObjRecognition
         //   ObjRecognition obc = new ObjRecognition();
         //  obc.initialize();
@@ -75,26 +81,49 @@ public class PRENG12 {
 
         int xp = 0;
         int yp = 0;
+
         while (true) {
 
-              ap.updateX(xp+=1);
-            ap.updateY(yp+=1);
-          //  System.out.println("Server" + ap.getX());
-          //  System.out.println("Wait 10 Seconds and then send Position");
-            Thread.sleep(500);
+            //überprüfe ob PiServerProtocol das Startsignal erhalten hat
+            if (bool_startSignalErhalten) {
+                //Setze den Startpin auf Hoch
+                gpioc.startPinHigh();
 
-            System.out.println("Send:" + ap.getX() + " " + ap.getY());
+            }
+            dp.updateR(false);
+            while (bool_startSignalErhalten) {
 
-            psp.sendPosition(ap.getX(), ap.getY());
-            ap.updateToSend(true);
-            //  socket.sendLogs("Position aktualisiert");
-            //    if(ds.getR()){
-            //      gpioc.stopPinHigh();
-            //    socket.sendLogs("Position Erkannt");
-            //  socket.sendLogs("Melde Freedomboard Stoppen");
-            // }
+                //Sende die Positionsdaten and den NotebookClient
+                psp.sendPosition(ap.getX(), ap.getY());
+
+                //Überorüfe ob die Last aufgenommen wurde
+                //   System.out.println(lastaufgenommen);
+                while (dp.getR()) {
+                    gpioc.stopPinHigh();
+                    System.out.println("important test");
+                    dp.updateR(false);
+
+                }
+                while (lastaufgenommen) {
+                    System.out.println(lastaufgenommen);
+
+                    //Sende
+                    ap.updateY(yp += 1);
+                    psp.sendPosition(ap.getX(), ap.getY());
+                    Thread.sleep(100);
+
+                    //Überprüfe ob RectangleDetection 
+                    while (dp.getR()) {
+
+                        gpioc.stopPinHigh();
+
+                    }
+
+                }
+
+            }
+
         }
-        // System.out.println("start false");
     }
 
     public synchronized static void objectRecognized() {
@@ -110,6 +139,6 @@ public class PRENG12 {
     }
 
     public synchronized static void lastPinHigh() {
-
+        lastaufgenommen = true;
     }
 }

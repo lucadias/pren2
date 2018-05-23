@@ -43,11 +43,11 @@ public class UltraSchallSensor extends Thread {
                 long endTime = System.nanoTime(); // Store the echo pin HIGH end time to calculate ECHO pin HIGH time.
 
                 double ussdistanz = ((((endTime - startTime) / 1e3) / 2) / 29.1);
-                System.out.println(ussdistanz);
-            //    ap.updateX((int) ussdistanz);
+              //  System.out.println(ussdistanz);
+                ap.updateX((int) ussdistanz);
                 ap.updateToSend(true);
 
-                Thread.sleep(2000);
+                Thread.sleep(100);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

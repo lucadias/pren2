@@ -1,14 +1,6 @@
 package RectangleDetectionHeadless;
 
-import RectangleDetection.*;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
@@ -19,15 +11,15 @@ import org.opencv.videoio.VideoCapture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class ObjRecognitionController {
 
     private ImageView originalFrame;
     // the FXML area for showing the mask
-    @FXML
     private ImageView maskImage;
     // the FXML area for showing the output of the morphological operations
-    @FXML
     private ImageView morphImage;
     // FXML slider for setting HSV ranges
 
@@ -39,9 +31,6 @@ public class ObjRecognitionController {
     private boolean cameraActive;
 
     // property for object binding
-    private ObjectProperty<String> hsvValuesProp;
-
-    @FXML
     private void startCamera() {
         // bind a text property with the string containing the current range of
         // HSV values for object detection
