@@ -47,9 +47,8 @@ public class ObjRecognition extends Application
             e.printStackTrace();
         }
     }
-
-    public static void initialize()
-    {
+    public static void main(String[] args) {
+        
         // load the native OpenCV library
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 

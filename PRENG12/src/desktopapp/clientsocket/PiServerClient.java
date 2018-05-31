@@ -27,7 +27,7 @@ public class PiServerClient extends Thread {
 
     public static void initialize() throws IOException, InterruptedException {
 
-        String hostName = "172.20.10.6";
+        String hostName = "192.168.43.13";
         int portNumber = 4444;
 
         try {

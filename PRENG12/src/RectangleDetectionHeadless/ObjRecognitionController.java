@@ -1,6 +1,9 @@
 package RectangleDetectionHeadless;
 
-
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
@@ -11,34 +14,30 @@ import org.opencv.videoio.VideoCapture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import org.opencv.core.Rect;
 
 public class ObjRecognitionController {
 
-    private ImageView originalFrame;
-    // the FXML area for showing the mask
-    private ImageView maskImage;
-    // the FXML area for showing the output of the morphological operations
-    private ImageView morphImage;
-    // FXML slider for setting HSV ranges
+    public static int i = 1;
 
     // a timer for acquiring the video stream
     private ScheduledExecutorService timer;
     // the OpenCV object that performs the video capture
-    private VideoCapture capture = new VideoCapture();
+    private VideoCapture capture = new VideoCapture(0);
+
     // a flag to change the button behavior
     private boolean cameraActive;
 
     // property for object binding
-    private void startCamera() {
+    public void startCamera() {
         // bind a text property with the string containing the current range of
         // HSV values for object detection
 
         // set a fixed width for all the image to show and preserve image ratio
-        this.imageViewProperties(this.originalFrame, 400);
-        this.imageViewProperties(this.maskImage, 200);
-        this.imageViewProperties(this.morphImage, 200);
+        System.out.println("camerastart");
 
         if (!this.cameraActive) {
             // start the video capture
@@ -53,18 +52,20 @@ public class ObjRecognitionController {
 
                     @Override
                     public void run() {
+                        
                         // effectively grab and process a single frame
                         Mat frame = grabFrame();
                         // convert and show the frame
-                       
-                        Image imageToShow = Utils.mat2Image(frame);
-                        
+
+                        Image imageToShow = Utils.matToBufferedImage(frame);
+                        //saveImage(imageToShow);
+                        //TODO : Send Image over Sockets
 //            updateImageView(originalFrame, imageToShow);
                     }
                 };
 
                 this.timer = Executors.newSingleThreadScheduledExecutor();
-                this.timer.scheduleAtFixedRate(frameGrabber, 0, 33, TimeUnit.MILLISECONDS);
+                this.timer.scheduleAtFixedRate(frameGrabber, 0, 300, TimeUnit.MILLISECONDS);
 
             } else {
                 // log the error
@@ -83,7 +84,9 @@ public class ObjRecognitionController {
      * Get a frame from the opened video stream (if any)
      */
     private Mat grabFrame() {
+
         Mat frame = new Mat();
+        Mat originalframe = new Mat();
 
         // check if the capture is open
         if (this.capture.isOpened()) {
@@ -91,6 +94,8 @@ public class ObjRecognitionController {
                 // read the current frame
                 this.capture.read(frame);
 
+                
+           
                 // if the frame is not empty, process it
                 if (!frame.empty()) {
                     // init
@@ -117,7 +122,8 @@ public class ObjRecognitionController {
                     //      + minValues.val[2] + "-" + maxValues.val[2];
                     //Utils.onFXThread(this.hsvValuesProp, valuesToPrint);
                     // threshold HSV image to select tennis balls
-                    //Core.inRange(hsvImage, minValues, maxValues, mask);
+            
+                    Core.inRange(hsvImage, new Scalar(0,0,0,0), new Scalar(0,0,0,0), mask);
                     // show the partial output
 //                    this.updateImageView(this.maskImage, Utils.mat2Image(mask));
                     // morphological operators
@@ -125,17 +131,19 @@ public class ObjRecognitionController {
                     Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
                     Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
 
+                    //      System.out.println(mask.channels());
                     Imgproc.erode(mask, morphOutput, erodeElement);
-                    Imgproc.erode(morphOutput, morphOutput, erodeElement);
+                   Imgproc.erode(morphOutput, morphOutput, erodeElement);
 
                     Imgproc.dilate(morphOutput, morphOutput, dilateElement);
                     Imgproc.dilate(morphOutput, morphOutput, dilateElement);
-
                     // show the partial output
                     //                  this.updateImageView(this.morphImage, Utils.mat2Image(morphOutput));
                     //frame = this.findAndDrawBalls(morphOutput, frame);
+                          
                     Rectangle rect = new Rectangle();
                     rect.findRectangle(frame);
+                  
 
                 }
 
@@ -149,11 +157,17 @@ public class ObjRecognitionController {
         return frame;
     }
 
-    private void imageViewProperties(ImageView image, int dimension) {
-        // set a fixed width for the given ImageView
-        image.setFitWidth(dimension);
-        // preserve the image ratio
-        image.setPreserveRatio(true);
+    private void saveImage(BufferedImage bframe) {
+        System.out.println("hi");
+        
+        i++;
+        File outputfile = new File("image" + i + ".jpg");
+        try {
+            ImageIO.write(bframe, "jpg", outputfile);
+        } catch (IOException ex) {
+            System.out.println("fail");
+            Logger.getLogger(ObjRecognitionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -164,7 +178,7 @@ public class ObjRecognitionController {
             try {
                 // stop the timer
                 this.timer.shutdown();
-                this.timer.awaitTermination(33, TimeUnit.MILLISECONDS);
+                this.timer.awaitTermination(100, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 // log any exception
                 System.err.println("Exception in stopping the frame capture, trying to release the camera now... " + e);

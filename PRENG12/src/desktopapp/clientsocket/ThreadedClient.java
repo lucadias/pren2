@@ -34,7 +34,7 @@ public class ThreadedClient extends Thread {
 
     @Override
     public void run() {
-        String hostName = "172.20.10.6";
+        String hostName = "192.168.43.13";
 
         try {
             Socket serverSocket = new Socket(hostName, 4444);

@@ -5,7 +5,7 @@
  */
 package preng12;
 
-import RectangleDetection.ObjRecognition;
+import RectangleDetectionHeadless.ObjRecognition;
 import gpio.GPIOCommunication;
 import gpio.UltraSchallSensor;
 
@@ -39,6 +39,7 @@ public class PRENG12 {
     public static DetectionStatus dp = DetectionStatus.getInstance();
     public static boolean bool_startSignalErhalten = false;
     public static boolean lastaufgenommen = false;
+    public static ObjRecognition obc;
 
     public static void main(String[] args) throws InterruptedException, IOException {
         initialize();
@@ -67,8 +68,9 @@ public class PRENG12 {
 
         lastaufgenommen = false;
         //  ObjRecognition
-        //   ObjRecognition obc = new ObjRecognition();
-        //  obc.initialize();
+        ObjRecognition obc = new ObjRecognition();
+    //obc.initialize();
+
         //UltraSchallSensor
         UltraSchallSensor uss = new UltraSchallSensor();
         thread2 = new Thread(uss);
@@ -82,16 +84,19 @@ public class PRENG12 {
         int xp = 0;
         int yp = 0;
 
+        System.out.println("init runloop");
         while (true) {
-
+            Thread.sleep(200);
             //überprüfe ob PiServerProtocol das Startsignal erhalten hat
             if (bool_startSignalErhalten) {
                 //Setze den Startpin auf Hoch
+
                 gpioc.startPinHigh();
 
             }
             dp.updateR(false);
             while (bool_startSignalErhalten) {
+                // System.out.println("bla");
 
                 //Sende die Positionsdaten and den NotebookClient
                 psp.sendPosition(ap.getX(), ap.getY());
@@ -100,8 +105,12 @@ public class PRENG12 {
                 //   System.out.println(lastaufgenommen);
                 while (dp.getR()) {
                     gpioc.stopPinHigh();
-                    System.out.println("important test");
                     dp.updateR(false);
+
+                }
+                Thread.sleep(200);
+                if (lastaufgenommen) {
+                            obc.initialize();
 
                 }
                 while (lastaufgenommen) {

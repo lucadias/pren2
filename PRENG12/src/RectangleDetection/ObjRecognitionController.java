@@ -18,10 +18,10 @@ import org.opencv.videoio.VideoCapture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import org.opencv.core.Rect;
 
+public class ObjRecognitionController {
 
-public class ObjRecognitionController
-{
     // FXML camera button
     @FXML
     private Button cameraButton;
@@ -62,8 +62,7 @@ public class ObjRecognitionController
     private ObjectProperty<String> hsvValuesProp;
 
     @FXML
-    private void startCamera()
-    {
+    private void startCamera() {
         // bind a text property with the string containing the current range of
         // HSV values for object detection
         hsvValuesProp = new SimpleObjectProperty<>();
@@ -74,22 +73,19 @@ public class ObjRecognitionController
         this.imageViewProperties(this.maskImage, 200);
         this.imageViewProperties(this.morphImage, 200);
 
-        if (!this.cameraActive)
-        {
+        if (!this.cameraActive) {
             // start the video capture
             this.capture.open(2);
 
             // is the video stream available?
-            if (this.capture.isOpened())
-            {
+            if (this.capture.isOpened()) {
                 this.cameraActive = true;
 
                 // grab a frame every 33 ms (30 frames/sec)
                 Runnable frameGrabber = new Runnable() {
 
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         // effectively grab and process a single frame
                         Mat frame = grabFrame();
                         // convert and show the frame
@@ -103,15 +99,11 @@ public class ObjRecognitionController
 
                 // update the button content
                 this.cameraButton.setText("Stop Camera");
-            }
-            else
-            {
+            } else {
                 // log the error
                 System.err.println("Failed to open the camera connection...");
             }
-        }
-        else
-        {
+        } else {
             // the camera is not active at this point
             this.cameraActive = false;
             // update again the button content
@@ -124,22 +116,25 @@ public class ObjRecognitionController
 
     /**
      * Get a frame from the opened video stream (if any)
-*/
-    private Mat grabFrame()
-    {
+     */
+    private Mat grabFrame() {
+        Mat originalframe = new Mat();
         Mat frame = new Mat();
 
         // check if the capture is open
-        if (this.capture.isOpened())
-        {
-            try
-            {
+        if (this.capture.isOpened()) {
+            try {
                 // read the current frame
-                this.capture.read(frame);
+                this.capture.read(originalframe);
+
+                  Rect rectCrop = new Rect(120, 0, 400, 300);
+
+                Imgproc.resize(new Mat(originalframe, rectCrop), frame, new Size(160, 120));
+
+                
 
                 // if the frame is not empty, process it
-                if (!frame.empty())
-                {
+                if (!frame.empty()) {
                     // init
                     Mat blurredImage = new Mat();
                     Mat hsvImage = new Mat();
@@ -156,8 +151,10 @@ public class ObjRecognitionController
                     // remember: H ranges 0-180, S and V range 0-255
                     Scalar minValues = new Scalar(this.hueStart.getValue(), this.saturationStart.getValue(),
                             this.valueStart.getValue());
+                    System.out.println(minValues);
                     Scalar maxValues = new Scalar(this.hueStop.getValue(), this.saturationStop.getValue(),
                             this.valueStop.getValue());
+                    System.out.println(maxValues);
 
                     // show the current selected HSV range
                     String valuesToPrint = "Hue range: " + minValues.val[0] + "-" + maxValues.val[0]
@@ -184,16 +181,13 @@ public class ObjRecognitionController
                     // show the partial output
                     this.updateImageView(this.morphImage, Utils.mat2Image(morphOutput));
 
-
-                   //frame = this.findAndDrawBalls(morphOutput, frame);
+                    //frame = this.findAndDrawBalls(morphOutput, frame);
                     Rectangle rect = new Rectangle();
                     rect.findRectangle(frame);
 
                 }
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 // log the (full) error
                 System.err.print("Exception during the image elaboration...");
                 e.printStackTrace();
@@ -203,9 +197,7 @@ public class ObjRecognitionController
         return frame;
     }
 
-
-    private void imageViewProperties(ImageView image, int dimension)
-    {
+    private void imageViewProperties(ImageView image, int dimension) {
         // set a fixed width for the given ImageView
         image.setFitWidth(dimension);
         // preserve the image ratio
@@ -215,41 +207,32 @@ public class ObjRecognitionController
     /**
      * Stop the acquisition from the camera and release all the resources
      */
-    private void stopAcquisition()
-    {
-        if (this.timer!=null && !this.timer.isShutdown())
-        {
-            try
-            {
+    private void stopAcquisition() {
+        if (this.timer != null && !this.timer.isShutdown()) {
+            try {
                 // stop the timer
                 this.timer.shutdown();
                 this.timer.awaitTermination(33, TimeUnit.MILLISECONDS);
-            }
-            catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 // log any exception
                 System.err.println("Exception in stopping the frame capture, trying to release the camera now... " + e);
             }
         }
 
-        if (this.capture.isOpened())
-        {
+        if (this.capture.isOpened()) {
             // release the camera
             this.capture.release();
         }
     }
 
-
-    private void updateImageView(ImageView view, Image image)
-    {
+    private void updateImageView(ImageView view, Image image) {
         Utils.onFXThread(view.imageProperty(), image);
     }
 
     /**
      * On application close, stop the acquisition from the camera
      */
-    protected void setClosed()
-    {
+    protected void setClosed() {
         this.stopAcquisition();
     }
 
