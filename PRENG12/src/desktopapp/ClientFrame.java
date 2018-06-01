@@ -62,12 +62,7 @@ public class ClientFrame extends Application {
         grid.setHgap(10);
         grid.setVgap(10);
 
-        Image image = new Image("File:image.jpg");
-        ImageView imageview = new ImageView(image);
-        imageview.setFitHeight(900);
-        imageview.setFitWidth(1200);
-        grid.add(imageview, 0, 0, 1, 1);
-
+       
         list = new ListView<String>();
         items = FXCollections.observableArrayList(
                 "DebugLog initialized");

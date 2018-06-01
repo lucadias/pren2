@@ -44,6 +44,8 @@ public class UltraSchallSensor extends Thread {
 
                 double ussdistanz = ((((endTime - startTime) / 1e3) / 2) / 29.1);
               //  System.out.println(ussdistanz);
+              
+              
                 ap.updateX((int) ussdistanz);
                 ap.updateToSend(true);
 

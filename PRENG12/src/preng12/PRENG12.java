@@ -69,7 +69,7 @@ public class PRENG12 {
         lastaufgenommen = false;
         //  ObjRecognition
         ObjRecognition obc = new ObjRecognition();
-    //obc.initialize();
+        //     obc.initialize();
 
         //UltraSchallSensor
         UltraSchallSensor uss = new UltraSchallSensor();
@@ -83,6 +83,7 @@ public class PRENG12 {
 
         int xp = 0;
         int yp = 0;
+        int tw = 0;
 
         System.out.println("init runloop");
         while (true) {
@@ -110,17 +111,20 @@ public class PRENG12 {
                 }
                 Thread.sleep(200);
                 if (lastaufgenommen) {
-                            obc.initialize();
+                    obc.initialize();
 
                 }
                 while (lastaufgenommen) {
-                    System.out.println(lastaufgenommen);
+                    //System.out.println(lastaufgenommen);
 
                     //Sende
-                    ap.updateY(yp += 1);
-                    psp.sendPosition(ap.getX(), ap.getY());
-                    Thread.sleep(100);
+                    if (tw  > 30) {
+                        tw++;
+                        ap.updateY(yp += 0.2);
 
+                        psp.sendPosition(ap.getX(), ap.getY());
+                        Thread.sleep(200);
+                    }
                     //Überprüfe ob RectangleDetection 
                     while (dp.getR()) {
 

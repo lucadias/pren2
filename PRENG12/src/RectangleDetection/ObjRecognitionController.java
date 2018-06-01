@@ -129,7 +129,7 @@ public class ObjRecognitionController {
 
                   Rect rectCrop = new Rect(120, 0, 400, 300);
 
-                Imgproc.resize(new Mat(originalframe, rectCrop), frame, new Size(160, 120));
+                Imgproc.resize(new Mat(originalframe, rectCrop), frame, new Size(320, 240));
 
                 
 

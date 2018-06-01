@@ -18,7 +18,9 @@ public class Rectangle {
 
     public Mat findRectangle(Mat src) throws Exception {
 
-        System.out.println("findrectangle");
+     //   Long starttime = System.nanoTime();
+        
+     //   System.out.println("findrectangle");
 
         Mat blurred = src.clone();
 
@@ -76,7 +78,7 @@ public class Rectangle {
                             maxCosine = Math.max(maxCosine, cosine);
                         }
 
-                        if (maxCosine < 0.3) {
+                        if (maxCosine < 0.99) {
                             maxCurves = curves;
                             maxArea = area;
                             maxId = contours.indexOf(contour);
@@ -143,25 +145,27 @@ public class Rectangle {
             double lengthy = sqrt((((p3.x - p4.x) * (p3.x - p4.x)) + ((p3.y - p4.y) * (p3.y - p4.y))));
 
             if (lengthx > lengthy - 4 && lengthx < lengthy + 4) {
-                if (lengthx > 10 && lengthy > 10 && lengthx < 150 && lengthy < 110) {
+                if (lengthx > 30 && lengthy > 30 && lengthx < 150 && lengthy < 110) {
 
                     if (middle.x >= 50) {
 
                         if (middle.x <= 110) {
 
-                            Imgproc.drawContours(src, contours, maxId, new Scalar(0, 255, 0, .8), 1);
+                          //  Imgproc.drawContours(src, contours, maxId, new Scalar(0, 255, 0, .8), 1);
 
                             System.out.println("erkannt");
 
                             dp.updateR(true);
 
                         }
-                        Imgproc.putText(src, middle.toString(), new Point(middle.x + 5, middle.y + 5), 0, 2, new Scalar(0, 0, 255, .8));
+                  //      Imgproc.putText(src, middle.toString(), new Point(middle.x + 5, middle.y + 5), 0, 2, new Scalar(0, 0, 255, .8));
 
                     }
                 }
             }
         }
+        
+       // System.out.println(((double) System.nanoTime() - starttime)/1000000000);
 
         return src;
     }

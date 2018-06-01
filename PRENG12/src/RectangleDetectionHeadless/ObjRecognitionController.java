@@ -52,7 +52,7 @@ public class ObjRecognitionController {
 
                     @Override
                     public void run() {
-                        
+
                         // effectively grab and process a single frame
                         Mat frame = grabFrame();
                         // convert and show the frame
@@ -65,7 +65,7 @@ public class ObjRecognitionController {
                 };
 
                 this.timer = Executors.newSingleThreadScheduledExecutor();
-                this.timer.scheduleAtFixedRate(frameGrabber, 0, 300, TimeUnit.MILLISECONDS);
+                this.timer.scheduleAtFixedRate(frameGrabber, 0, 50, TimeUnit.MILLISECONDS);
 
             } else {
                 // log the error
@@ -92,10 +92,12 @@ public class ObjRecognitionController {
         if (this.capture.isOpened()) {
             try {
                 // read the current frame
-                this.capture.read(frame);
+                this.capture.read(originalframe);
 
-                
-           
+                Rect rectCrop = new Rect(120, 0, 400, 300);
+
+                Imgproc.resize(new Mat(originalframe, rectCrop), frame, new Size(160, 120));
+
                 // if the frame is not empty, process it
                 if (!frame.empty()) {
                     // init
@@ -122,8 +124,7 @@ public class ObjRecognitionController {
                     //      + minValues.val[2] + "-" + maxValues.val[2];
                     //Utils.onFXThread(this.hsvValuesProp, valuesToPrint);
                     // threshold HSV image to select tennis balls
-            
-                    Core.inRange(hsvImage, new Scalar(0,0,0,0), new Scalar(0,0,0,0), mask);
+                    Core.inRange(hsvImage, new Scalar(0, 0, 0, 0), new Scalar(0, 0, 0, 0), mask);
                     // show the partial output
 //                    this.updateImageView(this.maskImage, Utils.mat2Image(mask));
                     // morphological operators
@@ -133,17 +134,16 @@ public class ObjRecognitionController {
 
                     //      System.out.println(mask.channels());
                     Imgproc.erode(mask, morphOutput, erodeElement);
-                   Imgproc.erode(morphOutput, morphOutput, erodeElement);
+                    Imgproc.erode(morphOutput, morphOutput, erodeElement);
 
                     Imgproc.dilate(morphOutput, morphOutput, dilateElement);
                     Imgproc.dilate(morphOutput, morphOutput, dilateElement);
                     // show the partial output
                     //                  this.updateImageView(this.morphImage, Utils.mat2Image(morphOutput));
                     //frame = this.findAndDrawBalls(morphOutput, frame);
-                          
+
                     Rectangle rect = new Rectangle();
                     rect.findRectangle(frame);
-                  
 
                 }
 
@@ -159,7 +159,7 @@ public class ObjRecognitionController {
 
     private void saveImage(BufferedImage bframe) {
         System.out.println("hi");
-        
+
         i++;
         File outputfile = new File("image" + i + ".jpg");
         try {

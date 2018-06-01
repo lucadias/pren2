@@ -28,7 +28,7 @@ public class PiServerProtocol {
         return instance;
     }
     private int posX;
-    private int posY;
+    private int posZ;
     private boolean sendpos = false;
 
     public String processInput(String theInput) {
@@ -48,12 +48,12 @@ public class PiServerProtocol {
             return "StopButton Press erkannt";
         }
         if ("".equals(theInput)) {
-            return "PosX: " + posX + ", PosY: " + posY;
+            return "Position X: " + posX + ", Position Z: " + posZ;
         }
         if (sendpos) {
             sendpos = false;
             // System.out.println("Sendposition processed input");
-            return "PosX: " + posX + ", PosY: " + posY;
+            return "Position X: " + posX + ", Position Z: " + posZ;
         }
         if (lastaufgenommen) {
             lastaufgenommen = false;
@@ -63,9 +63,9 @@ public class PiServerProtocol {
         return theOutput;
     }
 
-    public void sendPosition(int posX, int posY) {
+    public void sendPosition(int posX, int posZ) {
         this.posX = posX;
-        this.posY = posY;
+        this.posZ = posZ;
         sendpos = true;
     }
 

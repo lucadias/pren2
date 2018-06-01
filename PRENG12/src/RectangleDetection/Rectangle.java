@@ -27,6 +27,7 @@ public class Rectangle {
         dp = DetectionStatus.getInstance();
 
         Mat blurred = src.clone();
+        Imgproc.medianBlur(src, blurred, 9);
 
         Mat gray0 = new Mat(blurred.size(), CvType.CV_8U), gray = new Mat();
 
