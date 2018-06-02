@@ -49,7 +49,7 @@ class ClientUserInputReader extends Thread {
                     System.out.println("Client: " + fromUser);
                     out.println(fromUser);
                 }*/
-                Thread.sleep(200);
+                Thread.sleep(10);
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host ");

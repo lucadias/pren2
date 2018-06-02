@@ -42,7 +42,8 @@ class ClientServerOutputReader extends Thread {
                     //   ClientFrame.items
                     
                     if(outputFromServer.contains("Pos")){
-                    ClientFrame.test123.setValue(outputFromServer);
+
+                    ClientFrame.test123.setValue(outputFromServer.replace("_", "\n"));
                //     lv.updatevalue(outputFromServer); 
                    
                     }

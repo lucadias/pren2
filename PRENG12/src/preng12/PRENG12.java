@@ -28,7 +28,7 @@ public class PRENG12 {
     static Thread thread;
 
     static Thread thread2;
-
+    static Thread obcthread;
     static Thread gpiocthread;
     public static String pushtolist;
     public static PiServer psinstance = PiServer.getInstance();
@@ -68,8 +68,9 @@ public class PRENG12 {
 
         lastaufgenommen = false;
         //  ObjRecognition
-        ObjRecognition obc = new ObjRecognition();
-        //     obc.initialize();
+        obc = new ObjRecognition();
+        obcthread = new Thread(obc);
+        //         obc.initialize();
 
         //UltraSchallSensor
         UltraSchallSensor uss = new UltraSchallSensor();
@@ -84,6 +85,7 @@ public class PRENG12 {
         int xp = 0;
         int yp = 0;
         int tw = 0;
+        int tk = 0;
 
         System.out.println("init runloop");
         while (true) {
@@ -91,16 +93,17 @@ public class PRENG12 {
             //überprüfe ob PiServerProtocol das Startsignal erhalten hat
             if (bool_startSignalErhalten) {
                 //Setze den Startpin auf Hoch
+         //                           obcthread.start();
 
                 gpioc.startPinHigh();
 
             }
-            dp.updateR(false);
+            //  dp.updateR(false);
             while (bool_startSignalErhalten) {
                 // System.out.println("bla");
 
                 //Sende die Positionsdaten and den NotebookClient
-                psp.sendPosition(ap.getX(), ap.getY());
+                psp.sendPosition(0, ap.getY());
 
                 //Überorüfe ob die Last aufgenommen wurde
                 //   System.out.println(lastaufgenommen);
@@ -111,32 +114,27 @@ public class PRENG12 {
                 }
                 Thread.sleep(200);
                 if (lastaufgenommen) {
-                    obc.initialize();
+
+                    obcthread.start();
 
                 }
                 while (lastaufgenommen) {
-                    //System.out.println(lastaufgenommen);
+                    //   System.out.println(lastaufgenommen);
 
-                    //Sende
-                    if (tw  > 30) {
-                        tw++;
-                        ap.updateY(yp += 0.2);
-
-                        psp.sendPosition(ap.getX(), ap.getY());
-                        Thread.sleep(200);
-                    }
-                    //Überprüfe ob RectangleDetection 
-                    while (dp.getR()) {
-
-                        gpioc.stopPinHigh();
-
-                    }
+                    //ap.updateY((int) (100 - ((double) ap.getX()) / 2.6) * ((ap.getY() * 5 / 26) + 66));
+                 //   double test = 100 - ((double) ap.getX() / 2.6);
+                    //  System.out.println(test);
+                    psp.sendPosition(ap.getX(), ap.getY());
+//                    psp.sendPosition(ap.getX(), 0);
+                    Thread.sleep(100);
 
                 }
+                //Überprüfe ob RectangleDetection 
 
             }
 
         }
+
     }
 
     public synchronized static void objectRecognized() {

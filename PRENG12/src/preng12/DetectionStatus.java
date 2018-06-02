@@ -12,13 +12,17 @@ package preng12;
 public final class DetectionStatus {
 
     private static DetectionStatus instance = null;
+    
+    
 
     private static Object mutex = new Object();
 
-    public static boolean recognized;
+    public static boolean recognized = false;
 
-    public DetectionStatus() {
-        recognized = false;
+    public static int anzahlerkannt = 0;
+
+    private DetectionStatus() {
+
     }
 
     public static DetectionStatus getInstance() {
@@ -34,7 +38,9 @@ public final class DetectionStatus {
     }
 
     public void updateR(boolean r) {
+        
         this.recognized = r;
+        
     }
 
   

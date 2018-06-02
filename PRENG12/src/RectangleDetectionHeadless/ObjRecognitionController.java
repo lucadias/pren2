@@ -1,9 +1,14 @@
 package RectangleDetectionHeadless;
 
+import static RectangleDetectionHeadless.Rectangle.dp;
+import gpio.GPIOCommunication;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import static java.lang.Math.sqrt;
+import java.util.ArrayList;
+import java.util.List;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
@@ -17,26 +22,24 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import org.opencv.core.CvType;
+import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.imgcodecs.Imgcodecs;
 
 public class ObjRecognitionController {
 
     public static int i = 1;
 
-    // a timer for acquiring the video stream
-    private ScheduledExecutorService timer;
-    // the OpenCV object that performs the video capture
     private VideoCapture capture = new VideoCapture(0);
 
-    // a flag to change the button behavior
     private boolean cameraActive;
 
-    // property for object binding
     public void startCamera() {
-        // bind a text property with the string containing the current range of
-        // HSV values for object detection
 
-        // set a fixed width for all the image to show and preserve image ratio
         System.out.println("camerastart");
 
         if (!this.cameraActive) {
@@ -52,20 +55,25 @@ public class ObjRecognitionController {
 
                     @Override
                     public void run() {
+                        while (true) {
+                            // effectively grab and process a single frame
+                            Mat frame = grabFrame();
+                            // convert and show the frame
+                        }
 
-                        // effectively grab and process a single frame
-                        Mat frame = grabFrame();
-                        // convert and show the frame
-
-                        Image imageToShow = Utils.matToBufferedImage(frame);
+//                        Image imageToShow = Utils.matToBufferedImage(frame);
                         //saveImage(imageToShow);
                         //TODO : Send Image over Sockets
 //            updateImageView(originalFrame, imageToShow);
                     }
                 };
 
-                this.timer = Executors.newSingleThreadScheduledExecutor();
-                this.timer.scheduleAtFixedRate(frameGrabber, 0, 50, TimeUnit.MILLISECONDS);
+                Thread frammeGrabberThread = new Thread(frameGrabber);
+                frameGrabber.run();
+                Thread frammeGrabberThread2 = new Thread(frameGrabber);
+                frameGrabber.run();
+                Thread frammeGrabberThread3 = new Thread(frameGrabber);
+                frameGrabber.run();
 
             } else {
                 // log the error
@@ -92,58 +100,20 @@ public class ObjRecognitionController {
         if (this.capture.isOpened()) {
             try {
                 // read the current frame
+                //       this.starttime = System.nanoTime();
+                //   System.out.println("findrectangle");
+
                 this.capture.read(originalframe);
 
                 Rect rectCrop = new Rect(120, 0, 400, 300);
 
-                Imgproc.resize(new Mat(originalframe, rectCrop), frame, new Size(160, 120));
+                Imgproc.resize(new Mat(originalframe, rectCrop), frame, new Size(320, 240));
 
                 // if the frame is not empty, process it
                 if (!frame.empty()) {
                     // init
-                    Mat blurredImage = new Mat();
-                    Mat hsvImage = new Mat();
-                    Mat mask = new Mat();
-                    Mat morphOutput = new Mat();
 
-                    // remove some noise
-                    Imgproc.blur(frame, blurredImage, new Size(7, 7));
-
-                    // convert the frame to HSV
-                    Imgproc.cvtColor(blurredImage, hsvImage, Imgproc.COLOR_BGR2HSV);
-
-                    // get thresholding values from the UI
-                    // remember: H ranges 0-180, S and V range 0-255
-                    //         Scalar minValues = new Scalar(this.hueStart.getValue(), this.saturationStart.getValue(),
-                    //               this.valueStart.getValue());
-                    //     Scalar maxValues = new Scalar(this.hueStop.getValue(), this.saturationStop.getValue(),
-                    //           this.valueStop.getValue());
-                    // show the current selected HSV range
-                    //  String valuesToPrint = "Hue range: " + minValues.val[0] + "-" + maxValues.val[0]
-                    //        + "\tSaturation range: " + minValues.val[1] + "-" + maxValues.val[1] + "\tValue range: "
-                    //      + minValues.val[2] + "-" + maxValues.val[2];
-                    //Utils.onFXThread(this.hsvValuesProp, valuesToPrint);
-                    // threshold HSV image to select tennis balls
-                    Core.inRange(hsvImage, new Scalar(0, 0, 0, 0), new Scalar(0, 0, 0, 0), mask);
-                    // show the partial output
-//                    this.updateImageView(this.maskImage, Utils.mat2Image(mask));
-                    // morphological operators
-                    // dilate with large element, erode with small ones
-                    Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(24, 24));
-                    Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(12, 12));
-
-                    //      System.out.println(mask.channels());
-                    Imgproc.erode(mask, morphOutput, erodeElement);
-                    Imgproc.erode(morphOutput, morphOutput, erodeElement);
-
-                    Imgproc.dilate(morphOutput, morphOutput, dilateElement);
-                    Imgproc.dilate(morphOutput, morphOutput, dilateElement);
-                    // show the partial output
-                    //                  this.updateImageView(this.morphImage, Utils.mat2Image(morphOutput));
-                    //frame = this.findAndDrawBalls(morphOutput, frame);
-
-                    Rectangle rect = new Rectangle();
-                    rect.findRectangle(frame);
+                    findRectangle(frame);
 
                 }
 
@@ -157,49 +127,161 @@ public class ObjRecognitionController {
         return frame;
     }
 
-    private void saveImage(BufferedImage bframe) {
-        System.out.println("hi");
-
-        i++;
-        File outputfile = new File("image" + i + ".jpg");
-        try {
-            ImageIO.write(bframe, "jpg", outputfile);
-        } catch (IOException ex) {
-            System.out.println("fail");
-            Logger.getLogger(ObjRecognitionController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     /**
      * Stop the acquisition from the camera and release all the resources
      */
     private void stopAcquisition() {
-        if (this.timer != null && !this.timer.isShutdown()) {
-            try {
-                // stop the timer
-                this.timer.shutdown();
-                this.timer.awaitTermination(100, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                // log any exception
-                System.err.println("Exception in stopping the frame capture, trying to release the camera now... " + e);
+
+    }
+
+    protected void setClosed() {
+        this.stopAcquisition();
+    }
+
+    public void findRectangle(Mat src) throws Exception {
+
+        Mat blurred = src.clone();
+
+        Imgproc.medianBlur(src, blurred, 9);
+        Mat gray0 = new Mat(blurred.size(), CvType.CV_8U), gray = new Mat();
+
+        List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+
+        List<Mat> blurredChannel = new ArrayList<Mat>();
+        blurredChannel.add(blurred);
+        List<Mat> gray0Channel = new ArrayList<Mat>();
+        gray0Channel.add(gray0);
+
+        MatOfPoint2f approxCurve;
+        List<Point> maxCurves = null;
+
+        double maxArea = 40;
+        int maxId = -1;
+
+        for (int c = 0; c < 3; c++) {
+            int ch[] = {c, 0};
+            Core.mixChannels(blurredChannel, gray0Channel, new MatOfInt(ch));
+
+            int thresholdLevel = 1;
+            for (int t = 0; t < thresholdLevel; t++) {
+                if (t == 0) {
+                    Imgproc.Canny(gray0, gray, 10, 20, 3, true); // true ?
+                    Imgproc.dilate(gray, gray, new Mat(), new Point(-1, -1), 1); // 1
+                    // ?
+                } else {
+                    Imgproc.adaptiveThreshold(gray0, gray, thresholdLevel,
+                            Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,
+                            Imgproc.THRESH_BINARY,
+                            (src.width() + src.height()) / 200, t);
+                }
+
+                Imgproc.findContours(gray, contours, new Mat(),
+                        Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+
+                for (MatOfPoint contour : contours) {
+                    MatOfPoint2f temp = new MatOfPoint2f(contour.toArray());
+
+                    double area = Imgproc.contourArea(contour);
+                    approxCurve = new MatOfPoint2f();
+                    Imgproc.approxPolyDP(temp, approxCurve,
+                            Imgproc.arcLength(temp, true) * 0.02, true);
+
+                    if (approxCurve.total() == 4 && area >= maxArea) {
+                        double maxCosine = 0;
+                        //System.out.println("Found Rect at position: ");
+                        List<Point> curves = approxCurve.toList();
+                        for (int j = 2; j < 5; j++) {
+
+                            double cosine = Math.abs(angle(curves.get(j % 4),
+                                    curves.get(j - 2), curves.get(j - 1)));
+                            maxCosine = Math.max(maxCosine, cosine);
+                        }
+
+                        if (maxCosine < 0.3) {
+                            maxCurves = curves;
+                            maxArea = area;
+                            maxId = contours.indexOf(contour);
+                        }
+                    }
+
+                }
             }
         }
 
-        if (this.capture.isOpened()) {
-            // release the camera
-            this.capture.release();
+        if (maxId >= 0) {
+
+            Point p1 = maxCurves.get(0);
+            Point p2 = maxCurves.get(1);
+            Point p3 = maxCurves.get(2);
+            Point p4 = maxCurves.get(3);
+
+            Point middle = new Point();
+
+            double diffX = Math.abs(p1.x - p2.x);
+            double diffY = Math.abs(p1.y - p2.y);
+
+            if (diffX > diffY) {
+                if (p1.x > p2.x) {
+                    middle.x = p2.x + diffX / 2;
+                } else {
+                    middle.x = p1.x + diffX / 2;
+                }
+                if (p1.y > p4.y) {
+                    middle.y = p4.y + Math.abs(p1.y - p4.y) / 2;
+                } else {
+                    middle.y = p1.y + Math.abs(p1.y - p4.y) / 2;
+                }
+            } else {
+                if (p1.x > p4.x) {
+                    middle.x = p4.x + Math.abs(p1.x - p4.x) / 2;
+                } else {
+                    middle.x = p1.x + Math.abs(p1.x - p4.x) / 2;
+                }
+                if (p1.y > p2.y) {
+                    middle.y = p2.y + diffY / 2;
+                } else {
+                    middle.y = p1.y + diffY / 2;
+                }
+            }
+            double lengthx = sqrt((((p2.x - p1.x) * (p2.x - p1.x)) + ((p2.y - p1.y) * (p2.y - p1.y))));
+            double lengthy = sqrt((((p3.x - p4.x) * (p3.x - p4.x)) + ((p3.y - p4.y) * (p3.y - p4.y))));
+
+            if (lengthx > lengthy - 8 && lengthx < lengthy + 8) {
+                if (lengthx > 60 && lengthy > 60 && lengthx < 300 && lengthy < 220) {
+
+                    if (middle.x >= 100) {
+
+                        if (middle.x <= 220) {
+
+                            //  Imgproc.drawContours(src, contours, maxId, new Scalar(0, 255, 0, .8), 1);
+                            System.out.println("erkannt");
+                            Thread.sleep(preng12.ActualPosition.getX()/2);
+                            preng12.DetectionStatus.recognized = true;
+//dp.updateR(true);
+                            GPIOCommunication.stopPinHigh();
+                            // DetectionStatus.recognized = true;
+                            //System.out.println(DetectionStatus.recognized);
+
+                            //           Imgcodecs.imwrite("bidl.jpg", src);
+                        }
+                        //      Imgproc.putText(src, middle.toString(), new Point(middle.x + 5, middle.y + 5), 0, 2, new Scalar(0, 0, 255, .8));
+
+                    }
+                }
+            }
         }
+
+        //      System.out.println(((double) System.nanoTime() - this.starttime) / 1000000000);
     }
 
-    //private void updateImageView(ImageView view, Image image)
-    //{
-    //   Utils.onFXThread(view.imageProperty(), image);
-    //}
-    /**
-     * On application close, stop the acquisition from the camera
-     */
-    protected void setClosed() {
-        this.stopAcquisition();
+    public double angle(Point p1, Point p2, Point p0) {
+        double dx1 = p1.x - p0.x;
+        double dy1 = p1.y - p0.y;
+        double dx2 = p2.x - p0.x;
+        double dy2 = p2.y - p0.y;
+        return (dx1 * dx2 + dy1 * dy2)
+                / Math.sqrt((dx1 * dx1 + dy1 * dy1) * (dx2 * dx2 + dy2 * dy2)
+                        + 1e-10);
     }
 
 }

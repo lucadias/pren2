@@ -48,12 +48,12 @@ public class PiServerProtocol {
             return "StopButton Press erkannt";
         }
         if ("".equals(theInput)) {
-            return "Position X: " + posX + ", Position Z: " + posZ;
+            return "Position X: " + posX + "_Position Z: " + posZ;
         }
         if (sendpos) {
             sendpos = false;
             // System.out.println("Sendposition processed input");
-            return "Position X: " + posX + ", Position Z: " + posZ;
+            return "Position X: " + posX + "_Position Z: " + posZ;
         }
         if (lastaufgenommen) {
             lastaufgenommen = false;

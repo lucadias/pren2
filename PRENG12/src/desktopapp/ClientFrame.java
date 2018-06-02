@@ -36,8 +36,8 @@ public class ClientFrame extends Application {
     private static ObservableList<String> items;
     private static ListView<String> list;
     private GridPane grid;
-    public static StringProperty test123 = new SimpleStringProperty();
-    Thread thread;
+    public static StringProperty test123 = new SimpleStringProperty("PositionX: 000 \nPositionZ: 000");
+   Thread thread;
     public static String pushtolist;
     public static ThreadedClient instance = ThreadedClient.getInstance();
 
@@ -68,7 +68,7 @@ public class ClientFrame extends Application {
                 "DebugLog initialized");
         list.setItems(items);
 
-        grid.add(list, 1, 0, 1, 1);
+    //    grid.add(list, 1, 0, 1, 1);
 
         Text scenetitle2 = new Text(test123.getValue());
         test123.addListener(new ChangeListener() {
@@ -79,12 +79,15 @@ public class ClientFrame extends Application {
         });
 
         //scenetitle2.textProperty().bind(lv);
-        scenetitle2.setFont(Font.font("Tahoma", FontWeight.NORMAL, 30));
+        scenetitle2.setFont(Font.font("Tahoma", FontWeight.NORMAL, 80));
         grid.add(scenetitle2, 0, 1, 1, 1);
 
         Button btn = new Button("Start");
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        btn.setStyle("-fx-font-size: 80pt;");
+
+
+        HBox hbBtn = new HBox(1000);
+        hbBtn.setAlignment(Pos.CENTER_RIGHT);
         hbBtn.getChildren().add(btn);
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -95,7 +98,7 @@ public class ClientFrame extends Application {
 
             }
         });
-        Button btnstop = new Button("Last erkannt");
+      /*  Button btnstop = new Button("Last erkannt");
         HBox hbBtn1 = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_LEFT);
         hbBtn.getChildren().add(btnstop);
@@ -104,19 +107,17 @@ public class ClientFrame extends Application {
             public void handle(ActionEvent e) {
                 System.out.println("Sending Stop Signal to Raspi");
                 addItemsToList("Sending Stop Signal to Raspi");
-                instance.stopButtonPressed();
+         //       instance.stopButtonPressed();
             }
         });
-
+*/
         grid.add(hbBtn, 1, 1, 1, 1);
 
       //  grid.add(hbBtn1, 1, 1, 1, 1);
         grid.setFillWidth(btn, true);
         grid.setFillHeight(btn, true);
-        grid.setFillWidth(btnstop, true);
-        grid.setFillHeight(btnstop, true);
-
-        Scene scene = new Scene(grid, 1500, 1000);
+      
+        Scene scene = new Scene(grid, 900, 300);
         primaryStage.setScene(scene);
         primaryStage.show();
         System.out.println(items);

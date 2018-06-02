@@ -67,7 +67,7 @@ public class EchoServer extends Thread {
                     System.out.println(inputLine);
                     out.println(pspinstance.processInput(inputLine));
                 }
-                Thread.sleep(200);
+                Thread.sleep(100);
             }
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "

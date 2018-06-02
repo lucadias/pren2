@@ -16,7 +16,7 @@ public final class ActualPosition {
     private static Object mutex = new Object();
 
     public static int y;
-    public static int x;
+    public static int x = 300;
     
     public static boolean toSend;
 

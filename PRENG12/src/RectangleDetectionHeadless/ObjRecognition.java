@@ -1,9 +1,20 @@
 package RectangleDetectionHeadless;
 
 
-public class ObjRecognition {
+public class ObjRecognition  extends Thread {
 
-
+    boolean firsttime = true;
+    
+    @Override
+    public void run(){
+        while(true){
+        if(this.firsttime){
+            firsttime = false;
+            initialize();
+        }
+        }
+    }
+    
     public static void initialize() {
 
          System.load("/home/pi/opencv-3.3.1/build/lib/libopencv_java331.so");

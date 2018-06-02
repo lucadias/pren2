@@ -11,6 +11,7 @@ import preng12.DetectionStatus;
 
 public class Rectangle {
 
+    boolean notwritten = true;
 //                preng12.PRENG12.objectRecognized();
     //              preng12.PRENG12.sendMatLogic(bild);
     public int i = 0;
@@ -18,12 +19,11 @@ public class Rectangle {
 
     public Mat findRectangle(Mat src) throws Exception {
 
-     //   Long starttime = System.nanoTime();
-        
-     //   System.out.println("findrectangle");
-
+        Long starttime = System.nanoTime();
+        //   System.out.println("findrectangle");
         Mat blurred = src.clone();
 
+        Imgproc.medianBlur(src, blurred, 9);
         Mat gray0 = new Mat(blurred.size(), CvType.CV_8U), gray = new Mat();
 
         List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
@@ -78,7 +78,7 @@ public class Rectangle {
                             maxCosine = Math.max(maxCosine, cosine);
                         }
 
-                        if (maxCosine < 0.99) {
+                        if (maxCosine < 0.3) {
                             maxCurves = curves;
                             maxArea = area;
                             maxId = contours.indexOf(contour);
@@ -144,28 +144,33 @@ public class Rectangle {
             double lengthx = sqrt((((p2.x - p1.x) * (p2.x - p1.x)) + ((p2.y - p1.y) * (p2.y - p1.y))));
             double lengthy = sqrt((((p3.x - p4.x) * (p3.x - p4.x)) + ((p3.y - p4.y) * (p3.y - p4.y))));
 
-            if (lengthx > lengthy - 4 && lengthx < lengthy + 4) {
-                if (lengthx > 30 && lengthy > 30 && lengthx < 150 && lengthy < 110) {
+            if (lengthx > lengthy - 8 && lengthx < lengthy + 8) {
+                if (lengthx > 60 && lengthy > 60 && lengthx < 300 && lengthy < 220) {
 
-                    if (middle.x >= 50) {
+                    if (middle.x >= 100) {
 
-                        if (middle.x <= 110) {
+                        if (middle.x <= 220) {
 
-                          //  Imgproc.drawContours(src, contours, maxId, new Scalar(0, 255, 0, .8), 1);
-
+                            //  Imgproc.drawContours(src, contours, maxId, new Scalar(0, 255, 0, .8), 1);
                             System.out.println("erkannt");
-
+                            preng12.DetectionStatus.recognized = true;
                             dp.updateR(true);
+                            // DetectionStatus.recognized = true;
+                            //System.out.println(DetectionStatus.recognized);
+                            if (notwritten) {
+                                notwritten = false;
+                                Imgcodecs.imwrite("bidl.jpg", src);
+                            }
 
                         }
-                  //      Imgproc.putText(src, middle.toString(), new Point(middle.x + 5, middle.y + 5), 0, 2, new Scalar(0, 0, 255, .8));
+                        //      Imgproc.putText(src, middle.toString(), new Point(middle.x + 5, middle.y + 5), 0, 2, new Scalar(0, 0, 255, .8));
 
                     }
                 }
             }
         }
-        
-       // System.out.println(((double) System.nanoTime() - starttime)/1000000000);
+
+        System.out.println(((double) System.nanoTime() - starttime) / 1000000000);
 
         return src;
     }

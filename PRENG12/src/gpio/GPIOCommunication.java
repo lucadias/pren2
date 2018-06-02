@@ -50,11 +50,11 @@ public class GPIOCommunication extends Thread {
         startPinLow();
     }
 
-    public void startPinLow() {
+    public static void startPinLow() {
         sensorStartPin.low();
     }
 
-    public void stopPinHigh() {
+    public static void stopPinHigh() {
         sensorStopPin.high();
         try {
             Thread.sleep(200);
